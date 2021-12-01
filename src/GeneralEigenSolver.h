@@ -14,6 +14,7 @@
 
 #include <Eigen/Dense>
 #include <cassert>
+#include <iostream>
 
 template<typename ScalarType>
 using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
@@ -23,7 +24,8 @@ using VectorType = Eigen::Vector<ScalarType, Eigen::Dynamic>;
 
 template<typename ScalarType>
 class GeneralEigenSolver {
-private:
+
+protected:
     // TODO make mMatrix a pointer to a given matrix
     MatrixType<ScalarType> mMatrix;
     VectorType<ScalarType> mEigenVector;
@@ -47,7 +49,7 @@ public:
     int getMaxIter() const;
 
     // TODO add a pure virtual solve method
-    virtual ScalarType solve(bool logging = false) = 0;
+    virtual ScalarType solve() = 0;
 };
 
 /********************************************//**
