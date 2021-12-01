@@ -51,6 +51,15 @@ PowerMethod<ScalarType>::~PowerMethod() {}
 template<typename ScalarType>
 ScalarType PowerMethod<ScalarType>::solve() {
 
+    // If the user did not initialize the EigenVector
+    // We do it now
+
+    if (!this->getIsVectorInit()) {
+        this->initRandomEigenVector();
+    }
+
+    assert(this->getIsMatrixInit());
+
     ScalarType lambda;
 
     double threshold = this->getThreshold();

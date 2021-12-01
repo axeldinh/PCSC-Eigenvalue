@@ -32,6 +32,9 @@ protected:
     double mThreshold;
     unsigned int mMaxIter;
 
+    bool isMatrixInit;
+    bool isVectorInit;
+
 public:
 
     // Constructors and Destructors
@@ -47,9 +50,13 @@ public:
     // Getters
     double getThreshold() const;
     int getMaxIter() const;
+    bool getIsMatrixInit() const;
+    bool getIsVectorInit() const;
 
+    // Other functions
     // TODO add a pure virtual solve method
     virtual ScalarType solve() = 0;
+    void initRandomEigenVector();
 };
 
 /********************************************//**
@@ -58,14 +65,14 @@ public:
 
 template<typename ScalarType>
 GeneralEigenSolver<ScalarType>::GeneralEigenSolver() {
-    mEigenVector.setRandom();
     mThreshold = 1e-15;
     mMaxIter = 1000;
+    isMatrixInit = false;
+    isVectorInit = false;
 }
 
 template<typename ScalarType>
 GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
-
     // TODO investigate the destructor
 }
 
@@ -77,12 +84,14 @@ template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::setMatrix(const MatrixType<ScalarType> A) {
     mMatrix.resize(A.rows(), A.cols());
     mMatrix = A;
+    isMatrixInit = true;
 }
 
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::setEigenVector(const VectorType<ScalarType> V) {
     mEigenVector.resize(V.rows(), V.cols());
     mEigenVector = V;
+    isVectorInit = true;
 }
 
 template<typename ScalarType>
@@ -111,6 +120,35 @@ double GeneralEigenSolver<ScalarType>::getThreshold() const {
 template<typename ScalarType>
 int GeneralEigenSolver<ScalarType>::getMaxIter() const{
     return mMaxIter;
+}
+
+template<typename ScalarType>
+bool GeneralEigenSolver<ScalarType>::getIsMatrixInit() const {
+    bool copyBool = isMatrixInit; // TODO - Prevents abstraction leaks (not so sure)
+    return copyBool;
+}
+
+template<typename ScalarType>
+bool GeneralEigenSolver<ScalarType>::getIsVectorInit() const {
+    bool boolCopy = isVectorInit;
+    return boolCopy;
+}
+
+/********************************************//**
+ *  Other functions
+ ***********************************************/
+
+template<typename ScalarType>
+void GeneralEigenSolver<ScalarType>::initRandomEigenVector() {
+    if (isMatrixInit) {
+        mEigenVector.resize(mMatrix.rows(), mMatrix.cols());
+        mEigenVector.setRandom();
+        isVectorInit = true;
+    }
+    else {
+        // TODO transform it in an exception
+        std::cerr << "Matrix not initialized, please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix";
+    }
 }
 
 
