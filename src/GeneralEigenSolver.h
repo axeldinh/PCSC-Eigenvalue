@@ -141,7 +141,7 @@ bool GeneralEigenSolver<ScalarType>::getIsVectorInit() const {
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::initRandomEigenVector() {
     if (isMatrixInit) {
-        mEigenVector.resize(mMatrix.rows(), mMatrix.cols());
+        mEigenVector.resize(mMatrix.cols(), 1);
         mEigenVector.setRandom();
         isVectorInit = true;
     }
