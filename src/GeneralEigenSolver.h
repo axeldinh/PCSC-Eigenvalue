@@ -54,7 +54,6 @@ public:
     bool getIsVectorInit() const;
 
     // Other functions
-    // TODO add a pure virtual solve method
     virtual ScalarType solve() = 0;
     void initRandomEigenVector();
 };
@@ -96,15 +95,21 @@ void GeneralEigenSolver<ScalarType>::setEigenVector(const VectorType<ScalarType>
 
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::setThreshold(const double threshold) {
-    // TODO add exceptions (>0 and not too small) ValueErrorException
-    assert(threshold > 0);
+    if (threshold < 0) {
+        throw std::invalid_argument("INVALID THRESHOLD: please choose a positive threshold "
+                                         "(current value " + std::to_string(threshold) + ").\n");
+    }
+    if (threshold < 1e-16) {
+        std::cerr << "WARNING: Threshold < 1e-16, the computation might take a long time.\n";
+    }
     mThreshold = threshold;
 }
 
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::setMaxIter(const int maxIter) {
-    // TODO add exceptions
-    assert(maxIter > 0);
+    if (maxIter <= 0) {
+        throw std::invalid_argument("INVALID MAXIMUM ITERATIONs: The maximum number of iterations need to be positive\n");
+    }
     mMaxIter = maxIter;
 }
 
@@ -124,14 +129,12 @@ int GeneralEigenSolver<ScalarType>::getMaxIter() const{
 
 template<typename ScalarType>
 bool GeneralEigenSolver<ScalarType>::getIsMatrixInit() const {
-    bool copyBool = isMatrixInit; // TODO - Prevents abstraction leaks (not so sure)
-    return copyBool;
+    return isMatrixInit;
 }
 
 template<typename ScalarType>
 bool GeneralEigenSolver<ScalarType>::getIsVectorInit() const {
-    bool boolCopy = isVectorInit;
-    return boolCopy;
+    return isVectorInit;
 }
 
 /********************************************//**

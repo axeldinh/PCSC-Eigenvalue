@@ -72,7 +72,13 @@ ScalarType PowerMethod<ScalarType>::solve() {
         iter++;
         auto temp = GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
         auto temp_norm = temp.norm();
-        assert (temp_norm > 1e-15); // TODO provide exceptions (here it means that init vector is in the nullspace of A)
+        if (temp_norm < 1e-15) {
+            throw std::invalid_argument("INVALID STARTING VECTOR: The guessed eigenvector "
+                                        "is currently in the null "
+                                        "space of the matrix,\ntry to initialize "
+                                        "the vector with a different value "
+                                        "(e.g using PowerMethod<ScalarType>::setEigenVector(...))\n");
+        }
         GeneralEigenSolver<ScalarType>::mEigenVector = temp / temp_norm; // Update the
 
         // Compute the corresponding eigenvalue
