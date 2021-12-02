@@ -15,6 +15,7 @@
 #include <Eigen/Dense>
 #include <cassert>
 #include <iostream>
+#include "Exceptions/UninitializedSolver.h"
 
 template<typename ScalarType>
 using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
@@ -149,8 +150,9 @@ void GeneralEigenSolver<ScalarType>::initRandomEigenVector() {
         isVectorInit = true;
     }
     else {
-        // TODO transform it in an exception
-        std::cerr << "Matrix not initialized, please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix";
+        throw UninitializedSolver(
+                "matrix",
+                "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
     }
 }
 
