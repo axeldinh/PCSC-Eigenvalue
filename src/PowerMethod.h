@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include "GeneralEigenSolver.h"
+#include "Exceptions/UninitializedSolver.h"
 
 template<typename ScalarType>
 class PowerMethod: public GeneralEigenSolver<ScalarType> {
@@ -58,7 +59,9 @@ ScalarType PowerMethod<ScalarType>::solve() {
         this->initRandomEigenVector();
     }
 
-    assert(this->getIsMatrixInit());
+    if (!this->getIsMatrixInit()) {
+        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
+    }
 
     ScalarType lambda;
 
