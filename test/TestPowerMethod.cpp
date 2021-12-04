@@ -20,15 +20,18 @@ class TestPowerMethod: public ::testing::Test {
      */
 protected:
     void SetUp() override {
+        solver = new PowerMethod<double>();
         Eigen::Matrix<double, n, n> M;
         M.setZero();
         M.diagonal() = Eigen::Vector<double,n>::Constant(3.);
-        solver.setMatrix(M);
+        solver->setMatrix(M);
     }
 
-    void TearDown() override {}
+    void TearDown() override {
+        delete solver;
+    }
 
-    PowerMethod<double> solver;
+    PowerMethod<double>* solver;
     static constexpr int n {5};
 };
 
@@ -36,9 +39,9 @@ TEST_F(TestPowerMethod, diagonalMatrix) {
     /**
      * Tests if give A = 3*I, then the solve method return 3.
      */
-     Eigen::Vector<double,5> V;
+     Eigen::Vector<double,n> V;
      V.setOnes();
-     auto lambda = solver.solve();
+     auto lambda = solver->solve();
      ASSERT_NEAR(lambda, 3., 1e-15);
 }
 
@@ -46,10 +49,10 @@ TEST_F(TestPowerMethod, nullEigenVector) {
     /**
      * Checks if a null vector sends an std::invalid_argument exception
      */
-     Eigen::Vector<double, 5> V;
+     Eigen::Vector<double, n> V;
      V.setZero();
-     solver.setEigenVector(V);
-     ASSERT_THROW(solver.solve(), std::invalid_argument);
+     solver->setEigenVector(V);
+     ASSERT_THROW(solver->solve(), std::invalid_argument);
 }
 
 TEST_F(TestPowerMethod, uninitMatrix) {
@@ -58,9 +61,8 @@ TEST_F(TestPowerMethod, uninitMatrix) {
      * without matrix initialization returns an
      * UninitializedSolver Exception
      */
-     auto solver2 = new PowerMethod<double>(); // Need new solver
-     ASSERT_THROW(solver2->solve(), UninitializedSolver);
-     delete solver2;
+     solver = new PowerMethod<double>(); // Need new solver
+     ASSERT_THROW(solver->solve(), UninitializedSolver);
 }
 
 TEST_F(TestPowerMethod, uninitVector) {
@@ -69,7 +71,7 @@ TEST_F(TestPowerMethod, uninitVector) {
      * initializing the EigenVector
      * i.e the eigenvector is automatically initialized
      */
-    auto lambda = solver.solve();
+    auto lambda = solver->solve();
     ASSERT_NEAR(lambda, 3., 1e-15);
 }
 
@@ -77,15 +79,15 @@ TEST_F(TestPowerMethod, noConvergencePrintsToScreen) {
     /**
      * Checks if the absence of convergence prints a warning to screen
      */
-     auto solver2 = new PowerMethod<double>;
+     solver = new PowerMethod<double>;
      Eigen::Matrix<double,n,n> M;
      M.setRandom();
-     solver2->setMaxIter(1);
-     solver2->setMatrix(M);
+     solver->setMaxIter(1);
+     solver->setMatrix(M);
      testing::internal::CaptureStdout();
-     auto lambda = solver2->solve();
+     auto lambda = solver->solve();
      std::string output = testing::internal::GetCapturedStdout();
      std::string expected = "The Power Method did not converge after ";
-     expected += std::to_string(solver2->getMaxIter()) + " iterations\n";
+     expected += std::to_string(solver->getMaxIter()) + " iterations\n";
      EXPECT_STREQ(output.c_str(), expected.c_str());
 }
