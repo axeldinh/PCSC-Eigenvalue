@@ -2,11 +2,14 @@
 // Created by axeld on 08/12/2021.
 //
 
+// TODO Documentation
+
 #ifndef EIGENVALUE_PROJECT_INVERSEPOWERMETHOD_H
 #define EIGENVALUE_PROJECT_INVERSEPOWERMETHOD_H
 
-#include "GeneralEigenSolver.h"
 #include <iostream>
+
+#include "GeneralEigenSolver.h"
 
 template <typename ScalarType>
 class InversePowerMethod: public GeneralEigenSolver<ScalarType> {
