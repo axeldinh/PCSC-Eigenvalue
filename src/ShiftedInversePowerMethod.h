@@ -2,6 +2,8 @@
 // Created by axeld on 08/12/2021.
 //
 
+// TODO Documentation
+
 #ifndef EIGENVALUE_PROJECT_SHIFTEDINVERSEPOWERMETHOD_H
 #define EIGENVALUE_PROJECT_SHIFTEDINVERSEPOWERMETHOD_H
 
@@ -30,8 +32,8 @@ public:
      *
      */
     ///@{
-    ScalarType getShift();
-    bool getIsShiftInit();
+    ScalarType getShift() const;
+    bool getIsShiftInit() const;
     ///@}
 
     ScalarType solve();
@@ -65,12 +67,12 @@ void ShiftedInversePowerMethod<ScalarType>::setShift(ScalarType shift) {
 ==============================================*/
 
 template <typename ScalarType>
-ScalarType ShiftedInversePowerMethod<ScalarType>::getShift() {
+ScalarType ShiftedInversePowerMethod<ScalarType>::getShift() const {
     return mShift;
 }
 
 template <typename ScalarType>
-bool ShiftedInversePowerMethod<ScalarType>::getIsShiftInit() {
+bool ShiftedInversePowerMethod<ScalarType>::getIsShiftInit() const {
     return isShiftInit;
 }
 
@@ -130,8 +132,6 @@ ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
     }
     std::cout << "The Shifted Inverse Power Method did not converge after " << iter << " iterations\n";
     return 1. / lambda + mShift;
-
-
 }
 
 
