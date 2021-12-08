@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
-add_library(eigenvalue_solver src/PowerMethod.cpp src/GeneralEigenSolver.cpp src/ShiftedInversePowerMethod.cpp)
+add_library(eigenvalue_solver src/PowerMethod.cpp src/GeneralEigenSolver.cpp src/ShiftedInversePowerMethod.cpp src/InversePowerMethod.cpp src/QRMethod.cpp)
 target_link_libraries(eigenvalue_solver Eigen3::Eigen)
 
 add_executable(main src/main.cpp)
