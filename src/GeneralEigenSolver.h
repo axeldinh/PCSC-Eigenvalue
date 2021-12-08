@@ -236,7 +236,7 @@ bool GeneralEigenSolver<ScalarType>::getIsVectorInit() const {
  * Initialize #mEigenVector.
  * Initialize #mEigenVector with a uniform distribution in [-1,1].
  * The number of rows of #mEigenVector is changed to the number of columns of #mMatrix.
- * If #isMatrixInit is false, throws an UninitailizedSolver exception.
+ * If #isMatrixInit is false, throws an UninitializedSolver exception.
  * @tparam ScalarType
  */
 template<typename ScalarType>
