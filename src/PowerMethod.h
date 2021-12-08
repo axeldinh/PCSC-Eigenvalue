@@ -34,9 +34,9 @@ public:
     ScalarType solve();
 };
 
-/********************************************//**
- *  Constructors and Destructors
- ***********************************************/
+/*==========================================*//*=
+ =  Constructors and Destructors
+ ==============================================*/
 
 template<typename ScalarType>
 PowerMethod<ScalarType>::PowerMethod()
@@ -45,9 +45,9 @@ PowerMethod<ScalarType>::PowerMethod()
 template<typename ScalarType>
 PowerMethod<ScalarType>::~PowerMethod() {}
 
-/********************************************//**
- *  Solver
- ***********************************************/
+/*==========================================*//*=
+=  Solver
+==============================================*/
 
 template<typename ScalarType>
 ScalarType PowerMethod<ScalarType>::solve() {
@@ -85,8 +85,9 @@ ScalarType PowerMethod<ScalarType>::solve() {
         GeneralEigenSolver<ScalarType>::mEigenVector = temp / temp_norm; // Update the
 
         // Compute the corresponding eigenvalue
-        lambda = (GeneralEigenSolver<ScalarType>::mEigenVector.transpose() * GeneralEigenSolver<ScalarType>::mMatrix) * GeneralEigenSolver<ScalarType>::mEigenVector;
-        error = (GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector - lambda * GeneralEigenSolver<ScalarType>::mEigenVector).norm();
+        auto Av = GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
+        lambda = GeneralEigenSolver<ScalarType>::mEigenVector.transpose() * Av;
+        error = (Av - lambda * GeneralEigenSolver<ScalarType>::mEigenVector).norm();
 
         if (error < threshold) {
             return lambda;
@@ -95,7 +96,6 @@ ScalarType PowerMethod<ScalarType>::solve() {
     std::cout << "The Power Method did not converge after " << iter << " iterations\n";
     return lambda;
 }
-
 
 
 
