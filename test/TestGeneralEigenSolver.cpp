@@ -54,9 +54,9 @@ TEST_F(TestGeneralEigenSolver, changeSmallThreshold) {
      * Check that a warning displays if the desired threshold is small
      */
      testing::internal::CaptureStderr();
-     solver->setThreshold(1e-20);
+     solver->setThreshold(1e-21);
      std::string output = testing::internal::GetCapturedStderr();
-     std::string expected = "WARNING: Threshold < 1e-16, the computation might take a long time.\n";
+     std::string expected = "WARNING: Threshold < 1e-20, the computation might take a long time.\n";
      EXPECT_STREQ(output.c_str(), expected.c_str());
 }
 
