@@ -23,53 +23,27 @@ public:
 
 template<typename ScalarType>
 ScalarType QRMethod<ScalarType>::solve() {
-
-    auto A = GeneralEigenSolver<ScalarType>::mMatrix;
-
-    for (int i = 0; i < this->getMaxIter(); i++) {
-        auto Q = Eigen::HouseholderQR<MatrixType<ScalarType>>(A).householderQ();
-        A = Q.transpose() * A * Q;
-    }
-
-    ScalarType eigenValue = 0.;
-
-    for (int i = 0; i < A.cols(); i++) {
-        if (std::abs(A(i,i)) > std::abs(eigenValue)) {
-            eigenValue = A(i,i);
-        }
-    }
-
-    return eigenValue;
+    return this->solve(1);
 }
 
 // TODO need to sort diagonal and return n largest eigenvalues
 template<typename ScalarType>
 ScalarType QRMethod<ScalarType>::solve(int n) {
 
-    auto A = GeneralEigenSolver<ScalarType>::mMatrix;
+    VectorType<ScalarType> eigenValues = this->solve_all();
 
-    for (int i = 0; i < this->getMaxIter(); i++) {
-        auto Q = Eigen::HouseholderQR<MatrixType<ScalarType>>(A).householderQ();
-        A = Q.transpose() * A * Q;
-    }
+    std::sort(eigenValues.begin(), eigenValues.end());
 
-    ScalarType eigenValue = 0.;
-
-    for (int i = 0; i < A.cols(); i++) {
-        if (std::abs(A(i,i)) > std::abs(eigenValue)) {
-            eigenValue = A(i,i);
-        }
-    }
-
-    return eigenValue;
+    return eigenValues(n-1);
 }
 
 template<typename ScalarType>
 VectorType<ScalarType> QRMethod<ScalarType>::solve_all() {
+
     auto A = GeneralEigenSolver<ScalarType>::mMatrix;
 
-    for (int i = 0; i < this->getMaxIter(); i++) {
-        auto Q = Eigen::HouseholderQR<MatrixType<ScalarType>>(A).householderQ();
+    for (int i = 1; i < this->getMaxIter(); i++) {
+        MatrixType<ScalarType> Q = Eigen::HouseholderQR<MatrixType<ScalarType>>(A).householderQ();
         A = Q.transpose() * A * Q;
     }
 

@@ -157,7 +157,7 @@ void GeneralEigenSolver<ScalarType>::setThreshold(const double threshold) {
                                          "(current value " + std::to_string(threshold) + ").\n");
     }
     if (threshold < 1e-20) {
-        std::cerr << "WARNING: Threshold < 1e-16, the computation might take a long time.\n";
+        std::cerr << "WARNING: Threshold < 1e-20, the computation might take a long time.\n";
     }
     mThreshold = threshold;
 }
