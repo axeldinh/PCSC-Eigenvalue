@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.0)
 project(eigenvalue_project)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+add_subdirectory(eigen)
 
 add_library(eigenvalue_solver src/PowerMethod.cpp src/GeneralEigenSolver.cpp src/ShiftedInversePowerMethod.cpp src/InversePowerMethod.cpp src/QRMethod.cpp)
 target_link_libraries(eigenvalue_solver Eigen3::Eigen)
