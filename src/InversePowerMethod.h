@@ -47,10 +47,10 @@ ScalarType InversePowerMethod<ScalarType>::solve() {
     }
 
     // Computing the inverse of A
-    auto I = Eigen::Matrix<ScalarType,Eigen::Dynamic,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix.rows(), GeneralEigenSolver<ScalarType>::mMatrix.cols());
+    auto I = Eigen::Matrix<ScalarType,Eigen::Dynamic,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix->rows(), GeneralEigenSolver<ScalarType>::mMatrix->cols());
     I.setZero();
-    I.diagonal() = Eigen::Vector<ScalarType,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix.rows()).setOnes();
-    auto B = GeneralEigenSolver<ScalarType>::mMatrix.partialPivLu().inverse();
+    I.diagonal() = Eigen::Vector<ScalarType,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix->rows()).setOnes();
+    auto B = GeneralEigenSolver<ScalarType>::mMatrix->partialPivLu().inverse();
 
     double threshold = this->getThreshold();
     int maxIter = this->getMaxIter();

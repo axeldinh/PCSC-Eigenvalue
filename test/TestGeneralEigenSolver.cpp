@@ -19,7 +19,8 @@ protected:
     }
 
     void TearDown() override {
-        delete solver;
+        // TODO inspect cannot delete solver
+        //delete solver;
     }
     PowerMethod<double>* solver;
 };
@@ -82,7 +83,7 @@ TEST_F(TestGeneralEigenSolver, changeMatrixUpdatesIsInitMatrix) {
     /**
      * Tests if changing the matrix updates the boolean isMatrixInit
      */
-     Eigen::Matrix<double,3,3> M;
+     Eigen::MatrixXd M(3,3);
      M.setZero();
      solver->setMatrix(M);
      ASSERT_TRUE(solver->getIsMatrixInit());
@@ -92,7 +93,7 @@ TEST_F(TestGeneralEigenSolver, changeVectorUpdatesIsInitMatrix) {
     /**
      * Tests if changing the matrix updates the boolean isMatrixInit
      */
-    Eigen::Vector<double,3> V;
+    Eigen::VectorXd V(3);
     V.setZero();
     solver->setEigenVector(V);
     ASSERT_TRUE(solver->getIsVectorInit());
@@ -103,7 +104,7 @@ TEST_F(TestGeneralEigenSolver, randomInitVectorSetBoolToTrue) {
      * Checks if Randomly initialize the EigenVector
      * sets isVectorInit to true
      */
-     Eigen::Matrix<double,3,3> M;
+     Eigen::MatrixXd M(3,3);
      M.setZero();
      solver->setMatrix(M);
      solver->initRandomEigenVector();

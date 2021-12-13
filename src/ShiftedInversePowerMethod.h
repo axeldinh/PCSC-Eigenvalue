@@ -96,10 +96,10 @@ ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
     }
 
     // Computing the inverse of A - shift * I
-    auto I = Eigen::Matrix<ScalarType,Eigen::Dynamic,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix.rows(), GeneralEigenSolver<ScalarType>::mMatrix.cols());
+    auto I = Eigen::Matrix<ScalarType,Eigen::Dynamic,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix->rows(), GeneralEigenSolver<ScalarType>::mMatrix->cols());
     I.setZero();
-    I.diagonal() = Eigen::Vector<ScalarType,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix.rows()).setOnes();
-    auto B = (GeneralEigenSolver<ScalarType>::mMatrix - mShift * I).partialPivLu().inverse();
+    I.diagonal() = Eigen::Vector<ScalarType,Eigen::Dynamic>(GeneralEigenSolver<ScalarType>::mMatrix->rows()).setOnes();
+    auto B = (*GeneralEigenSolver<ScalarType>::mMatrix - mShift * I).partialPivLu().inverse();
 
     double threshold = this->getThreshold();
     int maxIter = this->getMaxIter();

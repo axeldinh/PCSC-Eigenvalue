@@ -20,15 +20,16 @@ class TestPowerMethod: public ::testing::Test {
      */
 protected:
     void SetUp() override {
-        solver = new PowerMethod<double>();
-        Eigen::Matrix<double, n, n> M;
+        solver = new PowerMethod<double>;
+        Eigen::MatrixXd M(n,n);
         M.setZero();
         M.diagonal() = Eigen::Vector<double,n>::Constant(3.);
         solver->setMatrix(M);
     }
 
     void TearDown() override {
-        delete solver;
+        // TODO inspect why cannot delete solver
+        //delete solver;
     }
 
     PowerMethod<double>* solver;
@@ -39,7 +40,7 @@ TEST_F(TestPowerMethod, diagonalMatrix) {
     /**
      * Tests if give A = 3*I, then the solve method return 3.
      */
-     Eigen::Vector<double,n> V;
+     Eigen::VectorXd V(n);
      V.setOnes();
      auto lambda = solver->solve();
      ASSERT_NEAR(lambda, 3., 1e-15);
@@ -49,7 +50,7 @@ TEST_F(TestPowerMethod, nullEigenVector) {
     /**
      * Checks if a null vector sends an std::invalid_argument exception
      */
-     Eigen::Vector<double, n> V;
+    Eigen::VectorXd V(n);
      V.setZero();
      solver->setEigenVector(V);
      ASSERT_THROW(solver->solve(), std::invalid_argument);
@@ -80,7 +81,7 @@ TEST_F(TestPowerMethod, noConvergencePrintsToScreen) {
      * Checks if the absence of convergence prints a warning to screen
      */
      solver = new PowerMethod<double>;
-     Eigen::Matrix<double,n,n> M;
+     Eigen::MatrixXd M(n,n);
      M.setRandom();
      solver->setMaxIter(1);
      solver->setMatrix(M);

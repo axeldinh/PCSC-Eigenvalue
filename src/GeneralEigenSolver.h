@@ -39,7 +39,7 @@ class GeneralEigenSolver {
 
 protected:
     // TODO make mMatrix a pointer to a given matrix
-    MatrixType<ScalarType> mMatrix;         /**< Matrix operator */
+    MatrixType<ScalarType> *mMatrix;         /**< Matrix operator */
     VectorType<ScalarType> mEigenVector;    /**< Eigenvector */
     double mThreshold;                      /**< Threshold for the solve() method */
     unsigned int mMaxIter;                  /**< Maximum number of iterations for the solve() method */
@@ -57,7 +57,7 @@ public:
      *
      */
     ///@{
-    void setMatrix(MatrixType<ScalarType> A);
+    void setMatrix(MatrixType<ScalarType>& A);
     void setEigenVector(VectorType<ScalarType> V);
     void setThreshold(double threshold);
     void setMaxIter(int maxIter);
@@ -104,6 +104,7 @@ GeneralEigenSolver<ScalarType>::GeneralEigenSolver() {
 template<typename ScalarType>
 GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
     // TODO investigate the destructor
+    delete mMatrix;
 }
 
 /*==============================================*//*=
@@ -120,9 +121,10 @@ GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
  */
 
 template<typename ScalarType>
-void GeneralEigenSolver<ScalarType>::setMatrix(const MatrixType<ScalarType> A) {
-    mMatrix.resize(A.rows(), A.cols());
-    mMatrix = A;
+void GeneralEigenSolver<ScalarType>::setMatrix(MatrixType<ScalarType>& A) {
+    //mMatrix.resize(A.rows(), A.cols());
+    //mMatrix = A;
+    mMatrix = &A;
     isMatrixInit = true;
 }
 
@@ -242,7 +244,7 @@ bool GeneralEigenSolver<ScalarType>::getIsVectorInit() const {
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::initRandomEigenVector() {
     if (isMatrixInit) {
-        mEigenVector.resize(mMatrix.cols(), 1);
+        mEigenVector.resize(mMatrix->cols(), 1);
         mEigenVector.setRandom();
         isVectorInit = true;
     }

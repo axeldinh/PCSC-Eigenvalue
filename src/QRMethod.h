@@ -16,6 +16,7 @@ template <typename ScalarType>
 class QRMethod: public GeneralEigenSolver<ScalarType> {
 
 public:
+
     ScalarType solve();
     ScalarType solve(int n);
     VectorType<ScalarType> solve_all();
@@ -26,13 +27,16 @@ ScalarType QRMethod<ScalarType>::solve() {
     return this->solve(1);
 }
 
-// TODO need to sort diagonal and return n largest eigenvalues
 template<typename ScalarType>
 ScalarType QRMethod<ScalarType>::solve(int n) {
 
+    if (n > GeneralEigenSolver<ScalarType>::mMatrix->rows()) {
+        throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is larger than the maximum number of eigenvalues.\n");
+    }
+
     VectorType<ScalarType> eigenValues = this->solve_all();
 
-    std::sort(eigenValues.begin(), eigenValues.end());
+    std::sort(eigenValues.begin(), eigenValues.end(), std::greater<ScalarType>());
 
     return eigenValues(n-1);
 }
@@ -40,7 +44,8 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
 template<typename ScalarType>
 VectorType<ScalarType> QRMethod<ScalarType>::solve_all() {
 
-    auto A = GeneralEigenSolver<ScalarType>::mMatrix;
+    // A is a copy of mMatrix, so the original matrix is not modified
+    auto A = *GeneralEigenSolver<ScalarType>::mMatrix;
 
     for (int i = 1; i < this->getMaxIter(); i++) {
         MatrixType<ScalarType> Q = Eigen::HouseholderQR<MatrixType<ScalarType>>(A).householderQ();

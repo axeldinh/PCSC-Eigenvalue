@@ -73,7 +73,7 @@ ScalarType PowerMethod<ScalarType>::solve() {
     while (iter < maxIter) {
         // Do one iteration of the Power Method. The matrix is fetched from the mother class
         iter++;
-        auto temp = GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
+        auto temp = *GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
         auto temp_norm = temp.norm();
         if (temp_norm < 1e-15) {
             throw std::invalid_argument("INVALID STARTING VECTOR: The guessed eigenvector "
@@ -85,7 +85,7 @@ ScalarType PowerMethod<ScalarType>::solve() {
         GeneralEigenSolver<ScalarType>::mEigenVector = temp / temp_norm; // Update the
 
         // Compute the corresponding eigenvalue
-        auto Av = GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
+        auto Av = *GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
         lambda = GeneralEigenSolver<ScalarType>::mEigenVector.transpose() * Av;
         error = (Av - lambda * GeneralEigenSolver<ScalarType>::mEigenVector).norm();
 
