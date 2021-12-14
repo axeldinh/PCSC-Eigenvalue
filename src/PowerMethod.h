@@ -1,7 +1,3 @@
-//
-// Created by axeld on 01/12/2021.
-//
-
 /**
  * Class to solve eigenvalues problems using the power method.
  * The power method is given by:
@@ -96,7 +92,5 @@ ScalarType PowerMethod<ScalarType>::solve() {
     std::cout << "The Power Method did not converge after " << iter << " iterations\n";
     return lambda;
 }
-
-
 
 #endif //EIGENVALUE_PROJECT_POWERMETHOD_H

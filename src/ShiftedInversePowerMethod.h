@@ -83,12 +83,12 @@ bool ShiftedInversePowerMethod<ScalarType>::getIsShiftInit() const {
 template <typename ScalarType>
 ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
 
-    if (!this->getIsVectorInit()) {
-        this->initRandomEigenVector();
-    }
-
     if (!this->getIsMatrixInit()) {
         throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
+    }
+
+    if (!this->getIsVectorInit()) {
+        this->initRandomEigenVector();
     }
 
     if (!this->getIsShiftInit()) {
@@ -108,7 +108,7 @@ ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
     ScalarType lambda;
 
     while (iter < maxIter) {
-        // Do one iteration of the Power Method. The matrix is fetched from the mother class
+
         iter++;
         auto temp = B * GeneralEigenSolver<ScalarType>::mEigenVector;
         auto temp_norm = temp.norm();

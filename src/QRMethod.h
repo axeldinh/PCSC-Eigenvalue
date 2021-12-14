@@ -12,9 +12,10 @@
 template<typename ScalarType>
 using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
 
+// TODO Doc
+
 template <typename ScalarType>
 class QRMethod: public GeneralEigenSolver<ScalarType> {
-
 public:
 
     ScalarType solve();
