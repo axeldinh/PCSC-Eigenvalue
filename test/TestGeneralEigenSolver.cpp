@@ -10,7 +10,6 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 #include "../src/PowerMethod.h"
-#include "../src/Exceptions/UninitializedSolver.h"
 
 class TestGeneralEigenSolver: public ::testing::Test {
 protected:
@@ -24,6 +23,17 @@ protected:
     }
     PowerMethod<double>* solver;
 };
+
+TEST_F(TestGeneralEigenSolver, setEigenVectorActuallyUpdates) {
+    /**
+     * Checks if calling setEigenVector actually updates mEigenVector
+     */
+
+    Eigen::VectorXd V(1);
+    V(0) = 2.;
+    solver->setEigenVector(V);
+    ASSERT_EQ(solver->getEigenVector()(0), 2.);
+}
 
 TEST_F(TestGeneralEigenSolver, goodInit) {
     /**
@@ -60,7 +70,6 @@ TEST_F(TestGeneralEigenSolver, changeSmallThreshold) {
      std::string expected = "WARNING: Threshold < 1e-20, the computation might take a long time.\n";
      EXPECT_STREQ(output.c_str(), expected.c_str());
 }
-
 
 TEST_F(TestGeneralEigenSolver, changePositiveMaxIter) {
     /**

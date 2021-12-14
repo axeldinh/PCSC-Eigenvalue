@@ -16,11 +16,25 @@
 #define EIGENVALUE_PROJECT_POWERMETHOD_H
 
 #include <iostream>
-#include "GeneralEigenSolver.h"
+#include "GeneralPowerMethod.h"
 #include "Exceptions/UninitializedSolver.h"
 
+/**
+ * Class to solve eigenvalues problems using the power method.
+ * The power method is given by:
+ *      Given \f$ A\in \mathbb{C}^{n \times n} \f$:
+ *          Choose a starting vector \f$ x_0 \in \mathbb{C}^n \f$
+ *          k = 0
+ *          repeat:
+ *              k = k+1
+ *              Compute y_k = Ax_{k-1}
+ *              Normalize x_k = \frac{y_k}{||y_k||_2}
+ *          End at convergence or when the number of iterations has exceeded maxIter.
+ *  @tparam ScalarType
+ */
+
 template<typename ScalarType>
-class PowerMethod: public GeneralEigenSolver<ScalarType> {
+class PowerMethod: public GeneralPowerMethod<ScalarType> {
 public:
     // Constructors and Destructors
     PowerMethod();
@@ -36,7 +50,7 @@ public:
 
 template<typename ScalarType>
 PowerMethod<ScalarType>::PowerMethod()
-    : GeneralEigenSolver<ScalarType>() {}
+    : GeneralPowerMethod<ScalarType>() {}
 
 template<typename ScalarType>
 PowerMethod<ScalarType>::~PowerMethod() {}
@@ -48,15 +62,32 @@ PowerMethod<ScalarType>::~PowerMethod() {}
 template<typename ScalarType>
 ScalarType PowerMethod<ScalarType>::solve() {
 
+    if (!this->getIsMatrixInit()) {
+        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
+    }
+
+    ScalarType lambda;
+
+    try {
+        lambda = GeneralPowerMethod<ScalarType>::solve(*this->mMatrix);
+    } catch (std::invalid_argument& e) {
+        throw;
+    } catch (std::exception& e) {
+        throw;
+    }
+
+    return lambda;
+
+    /*
+    if (!this->getIsMatrixInit()) {
+        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
+    }
+
     // If the user did not initialize the EigenVector
     // We do it now
 
     if (!this->getIsVectorInit()) {
         this->initRandomEigenVector();
-    }
-
-    if (!this->getIsMatrixInit()) {
-        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
     }
 
     ScalarType lambda;
@@ -89,8 +120,9 @@ ScalarType PowerMethod<ScalarType>::solve() {
             return lambda;
         }
     }
-    std::cout << "The Power Method did not converge after " << iter << " iterations\n";
+    std::cout << "The method did not converge after " << iter << " iterations\n";
     return lambda;
+     */
 }
 
 #endif //EIGENVALUE_PROJECT_POWERMETHOD_H

@@ -89,7 +89,7 @@ TEST_F(TestPowerMethod, noConvergencePrintsToScreen) {
      testing::internal::CaptureStdout();
      auto lambda = solver->solve();
      std::string output = testing::internal::GetCapturedStdout();
-     std::string expected = "The Power Method did not converge after ";
+     std::string expected = "The method did not converge after ";
      expected += std::to_string(solver->getMaxIter()) + " iterations\n";
      EXPECT_STREQ(output.c_str(), expected.c_str());
 }

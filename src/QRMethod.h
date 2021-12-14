@@ -12,8 +12,6 @@
 template<typename ScalarType>
 using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
 
-// TODO Doc
-
 template <typename ScalarType>
 class QRMethod: public GeneralEigenSolver<ScalarType> {
 public:
@@ -35,7 +33,13 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
         throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is larger than the maximum number of eigenvalues.\n");
     }
 
-    VectorType<ScalarType> eigenValues = this->solve_all();
+    VectorType<ScalarType> eigenValues;
+
+    try {
+        eigenValues = this->solve_all();
+    } catch(UninitializedSolver& e) {
+        throw e;
+    }
 
     std::sort(eigenValues.begin(), eigenValues.end(), std::greater<ScalarType>());
 
@@ -44,6 +48,10 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
 
 template<typename ScalarType>
 VectorType<ScalarType> QRMethod<ScalarType>::solve_all() {
+
+    if (!this->getIsMatrixInit()) {
+        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
+    }
 
     // A is a copy of mMatrix, so the original matrix is not modified
     auto A = *GeneralEigenSolver<ScalarType>::mMatrix;
