@@ -15,7 +15,7 @@
 class TestGeneralEigenSolver: public ::testing::Test {
 protected:
     void SetUp() override {
-        solver = new PowerMethod<double>;
+        solver = new PowerMethod<double>();
     }
 
     void TearDown() override {

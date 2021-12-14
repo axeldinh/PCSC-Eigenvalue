@@ -1,7 +1,3 @@
-//
-// Created by axeld on 01/12/2021.
-//
-
 /**
  * We implement here the tests for the PowerMethod class.
  */
@@ -9,21 +5,20 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 #include "../src/PowerMethod.h"
-#include "../src/Exceptions/UninitializedSolver.h"
 
 class TestPowerMethod: public ::testing::Test {
     /**
-     * Test suite for the Power method class
+     * Test suite for the PowerMethod class
      * At initialization, a PowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,5,5>
+     * with a diagonal Eigen::Matrix<double,2,2>
      * (No vector initialization)
      */
 protected:
     void SetUp() override {
-        solver = new PowerMethod<double>;
-        Eigen::MatrixXd M(n,n);
-        M.setZero();
-        M.diagonal() = Eigen::Vector<double,n>::Constant(3.);
+        solver = new PowerMethod<double>();
+        M.resize(n,n);
+        M << 2., -1.,
+            -1., 2.;
         solver->setMatrix(M);
     }
 
@@ -33,15 +28,17 @@ protected:
     }
 
     PowerMethod<double>* solver;
-    static constexpr int n {5};
+    Eigen::MatrixXd M;
+    static constexpr int n {2};
 };
 
-TEST_F(TestPowerMethod, diagonalMatrix) {
+TEST_F(TestPowerMethod, solveReturnsBiggestEigenvalue) {
     /**
-     * Tests if give A = 3*I, then the solve method return 3.
+     * Tests that if A = [[2,-1,[-1,2]], then the solve method returns 3.
      */
      Eigen::VectorXd V(n);
-     V.setOnes();
+     V.setRandom();
+     solver->setEigenVector(V);
      auto lambda = solver->solve();
      ASSERT_NEAR(lambda, 3., 1e-15);
 }
@@ -50,9 +47,10 @@ TEST_F(TestPowerMethod, nullEigenVector) {
     /**
      * Checks if a null vector sends an std::invalid_argument exception
      */
-    Eigen::VectorXd V(n);
+     Eigen::VectorXd V(n);
      V.setZero();
      solver->setEigenVector(V);
+     //auto lambda = solver->solve();
      ASSERT_THROW(solver->solve(), std::invalid_argument);
 }
 
@@ -63,6 +61,9 @@ TEST_F(TestPowerMethod, uninitMatrix) {
      * UninitializedSolver Exception
      */
      solver = new PowerMethod<double>(); // Need new solver
+     Eigen::VectorXd V(n);
+     V.setRandom();
+     solver->setEigenVector(V);
      ASSERT_THROW(solver->solve(), UninitializedSolver);
 }
 
