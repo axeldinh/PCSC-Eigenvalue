@@ -13,7 +13,7 @@ target_link_libraries(main eigenvalue_solver Eigen3::Eigen)
 
 add_subdirectory(googletest)
 
-add_executable(test_eigenvalue_solver test/TestPowerMethod.cpp test/TestGeneralEigenSolver.cpp)
+add_executable(test_eigenvalue_solver test/TestPowerMethod.cpp test/TestInverseMethod.cpp test/TestShiftedInverseMethod.cpp test/TestGeneralPowerMethod.cpp test/TestGeneralEigenSolver.cpp)
 target_link_libraries(test_eigenvalue_solver gtest_main gtest pthread eigenvalue_solver Eigen3::Eigen)
 
 add_custom_target(test ./test_eigenvalue_solver DEPENDS test_eigenvalue_solver)

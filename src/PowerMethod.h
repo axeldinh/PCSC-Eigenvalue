@@ -1,16 +1,3 @@
-/**
- * Class to solve eigenvalues problems using the power method.
- * The power method is given by:
- *      Given \f$ A\in \mathbb{C}^{n \times n} \f$:
- *          Choose a starting vector \f$ x_0 \in \mathbb{C}^n \f$
- *          k = 0
- *          repeat:
- *              k = k+1
- *              Compute y_k = Ax_{k-1}
- *              Normalize x_k = \frac{y_k}{||y_k||_2}
- *          End at convergence or when the number of iterations has exceeded maxIter.
- *
- */
 
 #ifndef EIGENVALUE_PROJECT_POWERMETHOD_H
 #define EIGENVALUE_PROJECT_POWERMETHOD_H
@@ -21,16 +8,11 @@
 
 /**
  * Class to solve eigenvalues problems using the power method.
- * The power method is given by:
- *      Given \f$ A\in \mathbb{C}^{n \times n} \f$:
- *          Choose a starting vector \f$ x_0 \in \mathbb{C}^n \f$
- *          k = 0
- *          repeat:
- *              k = k+1
- *              Compute y_k = Ax_{k-1}
- *              Normalize x_k = \frac{y_k}{||y_k||_2}
- *          End at convergence or when the number of iterations has exceeded maxIter.
- *  @tparam ScalarType
+ * Aims at solving the eigenvalue problem \f$Ax=\lambda x\f$, see GeneralPowerMethod for more information about the algorithm.
+ *
+ * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge |\lambda_n|\f$, then \f$\lambda_1\f$ should be returned,
+ * unless the starting vector is in the null space of \f$A\f$ or the starting vector is the eigenvector corresponding to another eigenvalue.
+ *  @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 
 template<typename ScalarType>
@@ -40,18 +22,32 @@ public:
     PowerMethod();
     ~PowerMethod();
 
-    // Solver
+    /** @name Solve method
+     *
+     */
+    ///@{
     ScalarType solve();
+    ///@}
 };
 
 /*==========================================*//*=
  =  Constructors and Destructors
  ==============================================*/
 
+/**
+ * Basic constructor.
+ * Uses the constructor of the GeneralPowerMethod class.
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ */
 template<typename ScalarType>
 PowerMethod<ScalarType>::PowerMethod()
     : GeneralPowerMethod<ScalarType>() {}
 
+/**
+ * Destructor.
+ * Uses the destructor of the GeneralPowerMethod class.
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ */
 template<typename ScalarType>
 PowerMethod<ScalarType>::~PowerMethod() {}
 
@@ -59,6 +55,17 @@ PowerMethod<ScalarType>::~PowerMethod() {}
 =  Solver
 ==============================================*/
 
+/**
+ * Solver for the eigenvalue problem.
+ * Solves the eigenvalue problem \f$Ax=\lambda x\f$ by returning the highest eigenvalue with respect to its absolute value.
+ * The corresponding eigenvector is stored in the #mEigenVector attribute.
+ *
+ * Throws an UninitializedSolver exception if #mMatrix has not been initialized.
+ *
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @return ScalarType, \f$\lambda\f$ the eigenvalue.
+ * @throws UninitializedSolver
+ */
 template<typename ScalarType>
 ScalarType PowerMethod<ScalarType>::solve() {
 
@@ -76,53 +83,6 @@ ScalarType PowerMethod<ScalarType>::solve() {
         throw;
     }
 
-    return lambda;
-
-    /*
-    if (!this->getIsMatrixInit()) {
-        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
-    }
-
-    // If the user did not initialize the EigenVector
-    // We do it now
-
-    if (!this->getIsVectorInit()) {
-        this->initRandomEigenVector();
-    }
-
-    ScalarType lambda;
-
-    double threshold = this->getThreshold();
-    int maxIter = this->getMaxIter();
-    double error;
-    int iter = 0;
-
-    while (iter < maxIter) {
-        // Do one iteration of the Power Method. The matrix is fetched from the mother class
-        iter++;
-        auto temp = *GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
-        auto temp_norm = temp.norm();
-        if (temp_norm < 1e-15) {
-            throw std::invalid_argument("INVALID STARTING VECTOR: The guessed eigenvector "
-                                        "is currently in the null "
-                                        "space of the matrix,\ntry to initialize "
-                                        "the vector with a different value "
-                                        "(e.g using PowerMethod<ScalarType>::setEigenVector(...))\n");
-        }
-        GeneralEigenSolver<ScalarType>::mEigenVector = temp / temp_norm; // Update the
-
-        // Compute the corresponding eigenvalue
-        auto Av = *GeneralEigenSolver<ScalarType>::mMatrix * GeneralEigenSolver<ScalarType>::mEigenVector;
-        lambda = GeneralEigenSolver<ScalarType>::mEigenVector.transpose() * Av;
-        error = (Av - lambda * GeneralEigenSolver<ScalarType>::mEigenVector).norm();
-
-        if (error < threshold) {
-            return lambda;
-        }
-    }
-    std::cout << "The method did not converge after " << iter << " iterations\n";
-    return lambda;
-     */
 }
 
 #endif //EIGENVALUE_PROJECT_POWERMETHOD_H
