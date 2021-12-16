@@ -7,12 +7,12 @@
 #include <iostream>
 #include "Exceptions/UninitializedSolver.h"
 
-// TODO Change the place of the usings, here they propagate to all files
+// TODO Change the place of the using, here they propagate to all files
 template<typename ScalarType>
-using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
+using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
 
 template<typename ScalarType>
-using VectorType = Eigen::Vector<ScalarType, Eigen::Dynamic>;
+using VectorType = Eigen::Vector<ScalarType, -1>;
 
 /**
  * Abstract class for EigenValue solvers.

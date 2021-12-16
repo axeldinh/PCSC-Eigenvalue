@@ -12,7 +12,7 @@
  * For the shifted inverse power method, the power method algorithm is used on \f$(A - \sigma I)^{-1}\f$, where \f$\sigma\f$
  * is some shift (#mShift) given by the user. #mShift should be given has a close approximate of the desired eigenvalue.
  *
- * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge |\lambda_n|\f$, then the closest eigenvalue to #mShift, \f$\lambda_i\f$, should be returned,
+ * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then the closest eigenvalue to #mShift, \f$\lambda_i\f$, should be returned,
  * unless the starting vector is in the null space of \f$A\f$ or the starting vector is the eigenvector corresponding to another eigenvalue.
  * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
@@ -133,16 +133,18 @@ bool ShiftedInversePowerMethod<ScalarType>::getIsShiftInit() const {
 template <typename ScalarType>
 ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
 
+    // TODO verify that the matrix is invertible and throw std::invalid_argument otherwise.
+
     if (!this->getIsShiftInit()) {
-        throw UninitializedSolver("shift", "please initialize with ShiftedInversePowerMethod<typename ScalarType>::setShift");
+        throw UninitializedSolver("shift", "please initialize with ShiftedInversePowerMethod<ScalarType>::setShift");
     }
 
     if (!this->getIsMatrixInit()) {
-        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
+        throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<ScalarType>::setMatrix");
     }
 
     // Computing the inverse of A - shift * I
-    auto I = Eigen::Matrix<ScalarType,Eigen::Dynamic,Eigen::Dynamic>(this->mMatrix->rows(), this->mMatrix->cols());
+    auto I = Eigen::Matrix<ScalarType,-1,-1>(this->mMatrix->rows(), this->mMatrix->cols());
     I.setIdentity();
     MatrixType<ScalarType> matrixInv = (*this->mMatrix - mShift*I).partialPivLu().inverse();
     ScalarType lambda;

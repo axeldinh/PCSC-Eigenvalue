@@ -1,8 +1,3 @@
-//
-// Created by axeld on 08/12/2021.
-//
-
-// TODO Documentation
 
 #ifndef EIGENVALUE_PROJECT_QRMETHOD_H
 #define EIGENVALUE_PROJECT_QRMETHOD_H
@@ -118,8 +113,11 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
  *
  * The eigenvalues are returned into a vector, in descending order.
  *
+ * Throws an UninitializedSolver exception if #mMatrix has not been initialized.
+ *
  * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return VectorType<ScalarType> name for Eigen::Vector<ScalarType,Eigen::Dynamic,Eigen::Dynamic>, vector containing the eigenvalues of #mMatrix in descending order.
+ * @throws UninitializedSolver
  */
 
 template<typename ScalarType>

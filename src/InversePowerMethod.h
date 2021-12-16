@@ -1,6 +1,4 @@
 
-// TODO Documentation
-
 #ifndef EIGENVALUE_PROJECT_INVERSEPOWERMETHOD_H
 #define EIGENVALUE_PROJECT_INVERSEPOWERMETHOD_H
 
@@ -13,7 +11,7 @@
  *
  * For the inverse power method, the power method algorithm is used on \f$A^{-1}\f$.
  *
- * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge |\lambda_n|\f$, then \f$\lambda_n\f$ should be returned,
+ * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then \f$\lambda_n\f$ should be returned,
  * unless the starting vector is in the null space of \f$A\f$ or the starting vector is the eigenvector corresponding to another eigenvalue.
  * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */

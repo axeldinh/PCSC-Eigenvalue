@@ -10,7 +10,7 @@
  * Class to solve eigenvalues problems using the power method.
  * Aims at solving the eigenvalue problem \f$Ax=\lambda x\f$, see GeneralPowerMethod for more information about the algorithm.
  *
- * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge |\lambda_n|\f$, then \f$\lambda_1\f$ should be returned,
+ * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then \f$\lambda_1\f$ should be returned,
  * unless the starting vector is in the null space of \f$A\f$ or the starting vector is the eigenvector corresponding to another eigenvalue.
  *  @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
@@ -82,6 +82,8 @@ ScalarType PowerMethod<ScalarType>::solve() {
     } catch (std::exception& e) {
         throw;
     }
+
+    return lambda;
 
 }
 
