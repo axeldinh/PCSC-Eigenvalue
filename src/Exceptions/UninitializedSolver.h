@@ -1,7 +1,3 @@
-//
-// Created by axeld on 01/12/2021.
-//
-
 /**
  * Implements an exception for solvers which are not initialized.
  */
@@ -9,15 +5,13 @@
 #ifndef EIGENVALUE_PROJECT_UNINITIALIZEDSOLVER_H
 #define EIGENVALUE_PROJECT_UNINITIALIZEDSOLVER_H
 
-using namespace std;
-
-class UninitializedSolver: public invalid_argument {
+class UninitializedSolver: public std::invalid_argument {
 private:
-    string mVar;
-    string mMsg;
+    std::string mVar;
+    std::string mMsg;
 public:
-    UninitializedSolver(string var, string msg = "") :
-            invalid_argument(msg.c_str()) {
+    UninitializedSolver(std::string var, std::string msg = "") :
+            std::invalid_argument(msg.c_str()) {
         mVar = var;
         mMsg = msg;
     }
