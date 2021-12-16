@@ -97,6 +97,11 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
         throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is larger than the maximum number of eigenvalues.\n");
     }
 
+    // TODO test this exception
+    if (n<1) {
+        throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is smaller than 1.\n");
+    }
+
     VectorType<ScalarType> eigenValues;
 
     try {

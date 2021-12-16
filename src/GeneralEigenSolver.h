@@ -113,6 +113,10 @@ GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
 
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::setMatrix(MatrixType<ScalarType>& A) {
+    // TODO test this exception
+    if (A.rows() != A.cols()) {
+        throw std::invalid_argument("The matrix does not have the same number of rows and columns");
+    }
     mMatrix = &A;
     isMatrixInit = true;
 }
