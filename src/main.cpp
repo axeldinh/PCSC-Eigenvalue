@@ -167,7 +167,7 @@ Eigen::MatrixXcd createComplexMatrix(int n) {
     for (int i = 0; i < n; i++) {
         A(i,i) = std::complex<double>(0., (double) i+1.);
     }
-    A = Q*A*Q.transpose();
+    A = Q*A*Q.transpose().conjugate();
 
     return A;
 }
@@ -386,7 +386,7 @@ int main(int argc, char* argv[]) {
                 );
     }
 
-    std::cout << "Matrix Size = " << n << "\n";
+    std::cout << "Matrix Size = " << n << ", Type = " << scalarType << "\n";
 
     // Solve the eigenvalue problem.
     if (scalarType == "double") {
