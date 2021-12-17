@@ -109,7 +109,7 @@ TEST_F(TestShiftedInversePowerMethod, noConvergencePrintsToScreen) {
     /**
      * Checks if the absence of convergence prints a warning to screen
      */
-    solver = new ShiftedInversePowerMethod<double>;
+    solver = new ShiftedInversePowerMethod<double>();
     Eigen::MatrixXd M(n,n);
     M.setRandom();
     solver->setMaxIter(1);
