@@ -91,7 +91,6 @@ GeneralEigenSolver<ScalarType>::GeneralEigenSolver() {
  */
 template<typename ScalarType>
 GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
-    // TODO investigate the destructor
     delete mMatrix;
 }
 
@@ -109,7 +108,6 @@ GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
 
 template<typename ScalarType>
 void GeneralEigenSolver<ScalarType>::setMatrix(MatrixType& A) {
-    // TODO test this exception
     if (A.rows() != A.cols()) {
         throw std::invalid_argument("The matrix does not have the same number of rows and columns");
     }
