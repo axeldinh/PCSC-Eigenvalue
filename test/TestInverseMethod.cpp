@@ -6,12 +6,12 @@ class TestInversePowerMethod: public ::testing::Test {
     /**
      * Test suite for the InversePowerMethod class
      * At initialization, a ShiftedInversePowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,5,5>
+     * with a diagonal Eigen::Matrix<double,2,2>
      * (No vector initialization)
      */
 protected:
     void SetUp() override {
-        solver = new InversePowerMethod<double>;
+        solver = new InversePowerMethod<double>();
         M.resize(n,n);
         M << 2, -1,
                 -1, 2;
@@ -83,4 +83,37 @@ TEST_F(TestInversePowerMethod, noConvergencePrintsToScreen) {
     std::string expected = "The method did not converge after ";
     expected += std::to_string(solver->getMaxIter()) + " iterations\n";
     EXPECT_STREQ(output.c_str(), expected.c_str());
+}
+
+class TestInversePowerMethodComplex: public ::testing::Test {
+    /**
+     * Test suite for the InversePowerMethod class with std::complex<double> values
+     * At initialization, a ShiftedInversePowerMethod is instantiated
+     * with a diagonal Eigen::Matrix<std::complex<double>,2,2>
+     * (No vector initialization)
+     */
+protected:
+    void SetUp() override {
+        solver = new InversePowerMethod<std::complex<double>>();
+        M.resize(n,n);
+        M << std::complex<double>(0.,2.), std::complex<double>(0.,-1.),
+                std::complex<double>(0.,-1.), std::complex<double>(0.,2.);
+        solver->setMatrix(M);
+    }
+
+    void TearDown() override {
+    }
+
+    InversePowerMethod<std::complex<double>>* solver;
+    Eigen::MatrixXcd M;
+    static constexpr int n {2};
+};
+
+TEST_F(TestInversePowerMethodComplex, solveReturnsSmallestEigenvalue) {
+    /**
+     * Checks if the InversePowerMethod returns the smallest eigenvalue
+     */
+
+    auto lambda = solver->solve();
+    ASSERT_NEAR(std::abs(lambda-std::complex<double>(0.,1.)), 0.0, 1e-15);
 }

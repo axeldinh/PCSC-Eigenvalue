@@ -8,6 +8,10 @@
 #include "../src/PowerMethod.h"
 
 class TestGeneralEigenSolver: public ::testing::Test {
+    /**
+     * Test suite for the GeneralEigenSolver class.
+     * The test are done using the PowerMethod subclass.
+     */
 protected:
     void SetUp() override {
         solver = new PowerMethod<double>();

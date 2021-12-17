@@ -4,6 +4,10 @@
 #include "../src/PowerMethod.h"
 
 class TestGeneralPowerMethod: public ::testing::Test {
+    /**
+     * Test suite for the GeneralPowerMethod class.
+     * The test are done using the PowerMethod subclass.
+     */
 protected:
     void SetUp() override {
         solver = new PowerMethod<double>();

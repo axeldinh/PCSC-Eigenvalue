@@ -6,12 +6,12 @@ class TestShiftedInversePowerMethod: public ::testing::Test {
     /**
      * Test suite for the ShiftedInversePowerMethod class
      * At initialization, a ShiftedInversePowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,5,5>
+     * with a diagonal Eigen::Matrix<double,2,2>
      * (No vector initialization)
      */
 protected:
     void SetUp() override {
-        solver = new ShiftedInversePowerMethod<double>;
+        solver = new ShiftedInversePowerMethod<double>();
         M.resize(n,n);
         M << 2, -1,
             -1, 2;
@@ -121,4 +121,47 @@ TEST_F(TestShiftedInversePowerMethod, noConvergencePrintsToScreen) {
     std::string expected = "The method did not converge after ";
     expected += std::to_string(solver->getMaxIter()) + " iterations\n";
     EXPECT_STREQ(output.c_str(), expected.c_str());
+}
+
+class TestShiftedInversePowerMethodComplex: public ::testing::Test {
+    /**
+     * Test suite for the ShiftedInversePowerMethod class with std::complex<double> values
+     * At initialization, a ShiftedInversePowerMethod is instantiated
+     * with a diagonal Eigen::Matrix<std::complex<double>,2,2>
+     * (No vector initialization)
+     */
+protected:
+    void SetUp() override {
+        solver = new ShiftedInversePowerMethod<std::complex<double>>();
+        M.resize(n,n);
+        M << std::complex<double>(0.,2.), std::complex<double>(0.,-1.),
+                std::complex<double>(0.,-1.), std::complex<double>(0.,2.);
+        solver->setMatrix(M);
+    }
+
+    void TearDown() override {}
+
+    ShiftedInversePowerMethod<std::complex<double>>* solver;
+    Eigen::MatrixXcd M;
+    static constexpr int n {2};
+};
+
+TEST_F(TestShiftedInversePowerMethodComplex, solveReturnsClosestEigenvalueToShift) {
+    /**
+     * Checks if the ShiftedInversePowerMethod returns the closest eigenvalue to the shift
+     */
+
+    solver->setShift(std::complex<double>(0.,2.5));
+    auto lambda = solver->solve();
+    ASSERT_NEAR(std::abs(lambda-std::complex<double>(0.,3.)), 0.0, 1e-15);
+}
+
+TEST_F(TestShiftedInversePowerMethodComplex, returnShiftIfItIsEigenValue) {
+    /**
+     * Checks that the shift is directly returned if it is an eigenvalue
+     */
+    solver->setShift(std::complex<double>(0.,3.));
+    solver->setMaxIter(1);
+    auto lambda = solver->solve();
+    ASSERT_NEAR(std::abs(lambda-std::complex<double>(0.,3.)), 0.0, 1e-15);
 }
