@@ -19,8 +19,6 @@ protected:
     }
 
     void TearDown() override {
-        // TODO inspect why cannot delete solver
-        //delete solver;
     }
 
     InversePowerMethod<double>* solver;

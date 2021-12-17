@@ -22,10 +22,7 @@ protected:
         solver->setMatrix(M);
     }
 
-    void TearDown() override {
-        // TODO inspect why cannot delete solver
-        //delete solver;
-    }
+    void TearDown() override {}
 
     PowerMethod<double>* solver;
     Eigen::MatrixXd M;

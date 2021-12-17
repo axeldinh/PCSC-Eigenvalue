@@ -13,10 +13,7 @@ protected:
         solver = new PowerMethod<double>();
     }
 
-    void TearDown() override {
-        // TODO inspect cannot delete solver
-        //delete solver;
-    }
+    void TearDown() override {}
     PowerMethod<double>* solver;
 };
 
@@ -55,3 +52,11 @@ TEST_F(TestGeneralEigenSolver, changeMatrixUpdatesIsInitMatrix) {
      ASSERT_TRUE(solver->getIsMatrixInit());
 }
 
+TEST_F(TestGeneralEigenSolver, nonSquareMatrixThrowsException) {
+    /**
+     * Checks that the user cannot instantiate a solver with a sqaure matrix
+     */
+    Eigen::MatrixXd M(2,3);
+    M.setZero();
+    ASSERT_THROW(solver->setMatrix(M), std::invalid_argument);
+}

@@ -10,8 +10,6 @@ protected:
     }
 
     void TearDown() override {
-        // TODO inspect cannot delete solver
-        //delete solver;
     }
     PowerMethod<double>* solver;
 };

@@ -18,10 +18,7 @@ protected:
         solver->setMatrix(M);
     }
 
-    void TearDown() override {
-        // TODO inspect why cannot delete solver
-        //delete solver;
-    }
+    void TearDown() override {}
 
     ShiftedInversePowerMethod<double>* solver;
     Eigen::MatrixXd M;
@@ -97,6 +94,15 @@ TEST_F(TestShiftedInversePowerMethod, nullSpaceEigenVectorReturnsException) {
     Eigen::VectorXd V(n);
     V.setZero();
     ASSERT_THROW(solver->solve(), std::invalid_argument);
+}
+
+TEST_F(TestShiftedInversePowerMethod, returnShiftIfItIsEigenValue) {
+    /**
+     * Checks that the shift is directly returned if it is an eigenvalue
+     */
+     solver->setShift(3.);
+     solver->setMaxIter(1);
+     ASSERT_EQ(solver->solve(), 3.);
 }
 
 TEST_F(TestShiftedInversePowerMethod, noConvergencePrintsToScreen) {
