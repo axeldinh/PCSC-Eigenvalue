@@ -4,15 +4,6 @@
  *
  * \tableofcontents
  *
- * \section improvements To Be Improved
- * - Could have a warning to prevent the user from using QRMethod with complex matrices.
- * - More options to QRMethod::solveAll() could allow the user to choose the ordering of the eigenvalues
- * - A logging option could be added to monitor the convergence of the methods.
- * - The current code does not handle sparse matrices, as a lot of matrices used in practice, e.g. in physics,
- * the usage of sparse matrices can be preferred and should be implemented in the future.
- *
- * ===
- *
  * \section intro Introduction
  *
  * This code aims at solving eigenvalue problems of the form \f$Ax=\lambda x\f$,
@@ -133,12 +124,20 @@
 #include <memory>
 #include "GeneralEigenSolver.h"
 #include "PowerMethod.h"
+#include "ShiftedPowerMethod.h"
 #include "ShiftedInversePowerMethod.h"
 #include "InversePowerMethod.h"
 #include "QRMethod.h"
 
-//https://stackoverflow.com/questions/865668/parsing-command-line-arguments-in-c
-
+ /**
+  * Retrieves an option from the user inputs.
+  * Copied from //https://stackoverflow.com/questions/865668/parsing-command-line-arguments-in-c
+  *
+  * @param begin starting pointer
+  * @param end end pointer
+  * @param option
+  * @return char*, value of the option
+  */
 char* getCmdOption(char ** begin, char ** end, const std::string & option)
 {
     char ** itr = std::find(begin, end, option);
@@ -149,9 +148,26 @@ char* getCmdOption(char ** begin, char ** end, const std::string & option)
     return nullptr;
 }
 
+/**
+ * Determines if an option has been given by the user.
+ * Copied from //https://stackoverflow.com/questions/865668/parsing-command-line-arguments-in-c
+  *
+  * @param begin starting pointer
+  * @param end end pointer
+  * @param option
+ * @return bool
+ */
+
 bool cmdOptionExists(char** begin, char** end, const std::string& option) {
     return std::find(begin, end, option) != end;
 }
+
+/**
+ * Creates a matrix \f$A \in \mathbb{R}^{n \times n}\f$.
+ * This matrix has eigenvalues \f$1, \cdots, n\f$
+ * @param n
+ * @return
+ */
 
 Eigen::MatrixXd createDoubleMatrix(int n) {
     Eigen::MatrixXd Q(n,n);
@@ -165,6 +181,13 @@ Eigen::MatrixXd createDoubleMatrix(int n) {
 
     return A;
 }
+
+/**
+ * Creates a matrix \f$A \in \mathbb{C}^{n \times n}\f$.
+ * This matrix has eigenvalues \f$i, \cdots, ni\f$
+ * @param n
+ * @return
+ */
 
 Eigen::MatrixXcd createComplexMatrix(int n) {
 
@@ -182,8 +205,19 @@ Eigen::MatrixXcd createComplexMatrix(int n) {
     return A;
 }
 
+/**
+ * Creates a pointer to solver, initialized with the different inputs.
+ *
+ * @tparam ScalarType
+ * @param algorithm
+ * @param maxIter
+ * @param threshold
+ * @param shift
+ * @return
+ */
+
 template <typename ScalarType>
-GeneralEigenSolver<ScalarType>* createSolver(const std::string& algorithm, int maxIter, double threshold, double shift) {
+GeneralEigenSolver<ScalarType>* createSolver(const std::string& algorithm, int maxIter, double threshold, ScalarType shift) {
 
     GeneralEigenSolver<ScalarType>* solver;
 
@@ -191,6 +225,15 @@ GeneralEigenSolver<ScalarType>* createSolver(const std::string& algorithm, int m
         solver =  new PowerMethod<ScalarType>();
         if (threshold!=-1.) {
             ((PowerMethod<ScalarType> *) solver)->setThreshold(threshold);
+        }
+    }
+    else if (algorithm == "spw") {
+        solver =  new ShiftedPowerMethod<ScalarType>();
+        if (threshold!=-1.) {
+            ((ShiftedPowerMethod<ScalarType> *) solver)->setThreshold(threshold);
+        }
+        if (std::abs(shift)!=0.0) {
+            ((ShiftedPowerMethod<ScalarType> *) solver)->setShift(shift);
         }
     }
     else if (algorithm == "ipw") {
@@ -232,6 +275,13 @@ GeneralEigenSolver<ScalarType>* createSolver(const std::string& algorithm, int m
     return solver;
 }
 
+/**
+ * Prints on screen the attributes of a solver
+ * @tparam ScalarType
+ * @param pSolver
+ * @param algorithm
+ */
+
 template <typename ScalarType>
 void printSolverConfig(const GeneralEigenSolver<ScalarType>* pSolver, const std::string& algorithm) {
 
@@ -239,6 +289,9 @@ void printSolverConfig(const GeneralEigenSolver<ScalarType>* pSolver, const std:
     std::cout << "Solving the eigenvalue problem using the ";
     if (algorithm=="pw") {
         std::cout << "PowerMethod";
+    }
+    if (algorithm=="spw") {
+        std::cout << "ShiftedPowerMethod";
     }
     if (algorithm=="ipw") {
         std::cout << "InversePowerMethod";
@@ -253,6 +306,10 @@ void printSolverConfig(const GeneralEigenSolver<ScalarType>* pSolver, const std:
     if (algorithm=="pw") {
         std::cout << ", threshold=" << ((PowerMethod<ScalarType>*) pSolver)->getThreshold();
     }
+    if (algorithm=="spw") {
+        std::cout << ", threshold=" << ((ShiftedPowerMethod<ScalarType>*) pSolver)->getThreshold()
+                  << ", shift=" << ((ShiftedPowerMethod<ScalarType>*) pSolver)->getShift();
+    }
     if (algorithm=="ipw") {
         std::cout << ", threshold=" << ((InversePowerMethod<ScalarType>*) pSolver)->getThreshold();
     }
@@ -262,6 +319,16 @@ void printSolverConfig(const GeneralEigenSolver<ScalarType>* pSolver, const std:
     }
     std::cout << "\n";
 }
+
+/**
+ * Solves an eigenvalue problem for real matrices.
+ * @param algorithm
+ * @param maxIter
+ * @param threshold
+ * @param shift
+ * @param n
+ * @param nEigenValue
+ */
 
 void solveDouble(const std::string& algorithm, int maxIter, double threshold, double shift, int n, int nEigenValue) {
 
@@ -308,7 +375,16 @@ void solveDouble(const std::string& algorithm, int maxIter, double threshold, do
     std::cout << "Solution: " << std::scientific << lambda << "\n";
 }
 
-void solveComplex(const std::string& algorithm, int maxIter, double threshold, double shift, int n) {
+/**
+ * Solves an eigenvalue problem for complex matrices.
+ * @param algorithm
+ * @param maxIter
+ * @param threshold
+ * @param shift
+ * @param n
+ */
+
+void solveComplex(const std::string& algorithm, int maxIter, double threshold, std::complex<double> shift, int n) {
 
     // First create a double matrix
     auto A = createComplexMatrix(n);
@@ -337,6 +413,13 @@ void solveComplex(const std::string& algorithm, int maxIter, double threshold, d
     std::cout << "Solution: " << std::scientific << lambda << "\n";
 }
 
+/**
+ * Allows the user to use the library via the command line.
+ * @param argc
+ * @param argv
+ * @return
+ */
+
 int main(int argc, char* argv[]) {
 
     // Options
@@ -344,7 +427,8 @@ int main(int argc, char* argv[]) {
     std::string scalarType = "double";
     int maxIter = -1;
     double threshold = -1.;
-    double shift = -1.;
+    double shiftDouble = 0.;
+    double shiftComplex = 0.;
     int n = 100;
     int nEigenValue = 1;
 
@@ -355,7 +439,7 @@ int main(int argc, char* argv[]) {
     else {
         throw std::invalid_argument(
                 "Algorithm not given, use -algorithm [option] with option being"
-                " one of \"qr\", \"pw\", \"ipw\", \"sipw\" \n"
+                " one of \"qr\", \"pw\", \"spw\", \"ipw\", \"sipw\" \n"
         );
     }
 
@@ -372,8 +456,12 @@ int main(int argc, char* argv[]) {
         threshold = std::stod(getCmdOption(argv, argv+argc, "-threshold"));
     }
 
-    if (cmdOptionExists(argv, argv+argc, "-shift")) {
-        shift = std::stod(getCmdOption(argv, argv+argc, "-shift"));
+    if (cmdOptionExists(argv, argv+argc, "-shiftdouble")) {
+        shiftDouble = std::stod(getCmdOption(argv, argv+argc, "-shiftdouble"));
+    }
+
+    if (cmdOptionExists(argv, argv+argc, "-shiftcomplex")) {
+        shiftComplex = std::stod(getCmdOption(argv, argv+argc, "-shiftcomplex"));
     }
 
     if (cmdOptionExists(argv, argv+argc, "-matrixsize")) {
@@ -401,7 +489,7 @@ int main(int argc, char* argv[]) {
     // Solve the eigenvalue problem.
     if (scalarType == "double") {
         try {
-            solveDouble(algorithm, maxIter, threshold, shift, n, nEigenValue);
+            solveDouble(algorithm, maxIter, threshold, shiftDouble, n, nEigenValue);
         } catch(UninitializedSolver& e) {
             // TODO .what() does not print on screen if they come from deeper than solveDouble / createSolver.
             std::cerr<<e.what();
@@ -413,7 +501,7 @@ int main(int argc, char* argv[]) {
     }
     else if (scalarType == "complex") {
         try {
-            solveComplex(algorithm, maxIter, threshold, shift, n);
+            solveComplex(algorithm, maxIter, threshold, std::complex<double>(shiftDouble, shiftComplex), n);
         } catch(UninitializedSolver& e) {
             // TODO .what() does not print on screen if they come from deeper than solveDouble / createSolver.
             std::cerr<<e.what();
