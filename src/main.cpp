@@ -23,8 +23,9 @@
  * - Eigen 3.4.0 (<a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Link</a>).
  * - GoogleTest 1.11.0 (<a href="https://github.com/google/googletest">Link</a>).
  *
- * 4 classes have been implemented to solve this problem in 4 different algorithms:
+ * 5 classes have been implemented to solve this problem in 4 different algorithms:
  * - PowerMethod: Solves the eigenvalue problem using the standard power method (see section \ref power_method).
+ * - ShiftedPowerMethod: Solves the eigenvalue problem using the shifted power method (see section \ref shifted_power_method).
  * - InversePowerMethod: Solves the eigenvalue problem using the inverse power method (see section \ref inverse_power_method).
  * - ShiftedInversePowerMethod: Solves the eigenvalue problem using the shifted inverse power method (see section \ref shifted_inverse_power_method).
  * - QRMethod: Solves the eigenvalue problem using the QR method (see section \ref qr_method).
@@ -64,8 +65,9 @@
  *
  * The variants then use solve(MatrixType<ScalarType>& A) with different matrices depending on the desired algorithm.
  *
- * Then 3 daughter classes inherit from GeneralPowerMethod:
+ * Then 4 daughter classes inherit from GeneralPowerMethod:
  * - PowerMethod, the standard power method. Computes the highest eigenvalue, in absolute value (see section \ref power_method).
+ * - ShiftedPowerMethod, the shifted power method. (see \ref shifted_power_method).
  * - InversePowerMethod. Computes the smallest eigenvalue, in absolute value (see section \ref inverse_power_method).
  * - ShiftedInversePowerMethod. Computes the closest eigenvalue to some shift \f$\sigma\f$ (see section \ref shifted_inverse_power_method).
  *
@@ -76,6 +78,14 @@
  * The PowerMethod class implements the standard power method.
  * Given a matrix \f$A \in \mathbb{C}^{n\times n}\f$ with eigenvalues
  * \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then the returned eigenvalue is \f$\lambda_1\f$.
+ * This will not be the case if the starting vector is in the null space of \f$A\f$ or an eigenvector of \f$A\f$.
+ *
+ *  * \subsubsection shifted_power_method Shifted Power Method
+ *
+ * The ShiftedPowerMethod class implements the shifted power method.
+ * Given a matrix \f$A \in \mathbb{C}^{n\times n}\f$ with eigenvalues
+ * \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then the returned eigenvalue is \f$\lambda_i\f$
+ * such that \f$|\lambda_i - \sigma \f$ is maximal.
  * This will not be the case if the starting vector is in the null space of \f$A\f$ or an eigenvector of \f$A\f$.
  *
  * ---
