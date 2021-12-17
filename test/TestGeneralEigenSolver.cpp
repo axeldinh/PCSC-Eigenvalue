@@ -54,7 +54,7 @@ TEST_F(TestGeneralEigenSolver, changeMatrixUpdatesIsInitMatrix) {
 
 TEST_F(TestGeneralEigenSolver, nonSquareMatrixThrowsException) {
     /**
-     * Checks that the user cannot instantiate a solver with a sqaure matrix
+     * Checks that the user cannot instantiate a solver with a non-square matrix
      */
     Eigen::MatrixXd M(2,3);
     M.setZero();

@@ -17,6 +17,7 @@ protected:
 TEST_F(TestGeneralPowerMethod, setEigenVectorActuallyUpdates) {
     /**
      * Checks if calling setEigenVector actually updates mEigenVector
+     * Also checks that getEigenVector is indeed working.
      */
 
     Eigen::VectorXd V(1);
