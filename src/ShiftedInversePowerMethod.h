@@ -14,11 +14,13 @@
  *
  * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then the closest eigenvalue to #mShift, \f$\lambda_i\f$, should be returned,
  * unless the starting vector is in the null space of \f$A\f$ or the starting vector is the eigenvector corresponding to another eigenvalue.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 
 template<typename ScalarType>
 class ShiftedInversePowerMethod: public GeneralPowerMethod<ScalarType> {
+
+    using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
 
 protected:
     ScalarType mShift; /**< Shift for the shifted inverse power method algorithm. */
@@ -57,7 +59,7 @@ public:
 /**
  * Basic constructor.
  * Uses the constructor of the GeneralPowerMethod class.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 ShiftedInversePowerMethod<ScalarType>::ShiftedInversePowerMethod()
@@ -68,7 +70,7 @@ ShiftedInversePowerMethod<ScalarType>::ShiftedInversePowerMethod()
 /**
 * Destructor.
 * Uses the destructor of the GeneralPowerMethod class.
-* @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+* @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
 */
 template<typename ScalarType>
 ShiftedInversePowerMethod<ScalarType>::~ShiftedInversePowerMethod() {}
@@ -80,7 +82,7 @@ ShiftedInversePowerMethod<ScalarType>::~ShiftedInversePowerMethod() {}
 /**
  * Setter for #mShift.
  * Modifies the value of #mShift.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param shift, ScalarType, the desired shift, it should be close to the actual eigenvalue
  */
 template <typename ScalarType>
@@ -96,7 +98,7 @@ void ShiftedInversePowerMethod<ScalarType>::setShift(ScalarType shift) {
 /**
  * Getter for #mShift.
  * Returns #mShift.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return ScalarType #mShift, the shift for the shifted inverse power method (see the detailed description ShiftedInversePowerMethod).
  */
 template <typename ScalarType>
@@ -107,7 +109,7 @@ ScalarType ShiftedInversePowerMethod<ScalarType>::getShift() const {
 /**
  * Getter for #isShiftInit.
  * Returns #isShiftInit.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return bool #isShiftInit, true if #mShift has been initialized.
  */
 template <typename ScalarType>
@@ -126,14 +128,12 @@ bool ShiftedInversePowerMethod<ScalarType>::getIsShiftInit() const {
  *
  * Throws an UninitializedSolver exception if #mMatrix or #mShift have not been initialized.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return ScalarType, \f$\lambda\f$ the eigenvalue.
  * @throws UninitializedSolver
  */
 template <typename ScalarType>
 ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
-
-    // TODO verify that the matrix is invertible and throw std::invalid_argument otherwise.
 
     if (!this->getIsShiftInit()) {
         throw UninitializedSolver("shift", "please initialize with ShiftedInversePowerMethod<ScalarType>::setShift");
@@ -144,9 +144,16 @@ ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
     }
 
     // Computing the inverse of A - shift * I
-    auto I = Eigen::Matrix<ScalarType,-1,-1>(this->mMatrix->rows(), this->mMatrix->cols());
+    auto I = MatrixType(this->mMatrix->rows(), this->mMatrix->cols());
     I.setIdentity();
-    MatrixType<ScalarType> matrixInv = (*this->mMatrix - mShift*I).partialPivLu().inverse();
+    MatrixType matrixShift = *this->mMatrix - mShift*I;
+
+    // TODO Test this if statement
+    if (matrixShift.determinant() == 0.0) {
+        // The shift is an eigenvalue
+        return mShift;
+    }
+    MatrixType matrixInv = matrixShift.partialPivLu().inverse();
     ScalarType lambda;
 
     try {
