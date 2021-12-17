@@ -4,10 +4,9 @@
 
 class TestQRMethod: public ::testing::Test {
     /**
-     * Test suite for the ShiftedInversePowerMethod class
-     * At initialization, a ShiftedInversePowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,5,5>
-     * (No vector initialization)
+     * Test suite for the QRMethod class
+     * At initialization, a QRMethod is instantiated
+     * with a diagonal Eigen::Matrix<double,2,2>
      */
 protected:
     void SetUp() override {
@@ -30,7 +29,7 @@ TEST_F(TestQRMethod, solveReturnsBiggestEigenvalue) {
      * Checks that the solve() method returns the biggest eigenvalue
      */
      auto lambda = solver->solve();
-     ASSERT_NEAR(lambda, 3., 1e-15);
+     ASSERT_NEAR(lambda, 3., 1e-8);
 }
 
 TEST_F(TestQRMethod, solve2ReturnsSecondBiggestEigenvalue) {
@@ -38,7 +37,7 @@ TEST_F(TestQRMethod, solve2ReturnsSecondBiggestEigenvalue) {
      * Checks that the solve(2) method returns the second biggest eigenvalue
      */
     auto lambda = solver->solve(2);
-    ASSERT_NEAR(lambda, 1., 1e-15);
+    ASSERT_NEAR(lambda, 1., 1e-8);
 }
 
 TEST_F(TestQRMethod, solveAllReturnsAllEigenvalue) {
@@ -48,8 +47,8 @@ TEST_F(TestQRMethod, solveAllReturnsAllEigenvalue) {
      */
     auto lambdas = solver->solveAll();
     ASSERT_EQ(lambdas.rows(), 2);
-    ASSERT_NEAR(lambdas(0), 1., 1e-15);
-    ASSERT_NEAR(lambdas(1), 3., 1e-15);
+    ASSERT_NEAR(lambdas(0), 3., 1e-8);
+    ASSERT_NEAR(lambdas(1), 1., 1e-8);
 }
 
 TEST_F(TestQRMethod, negativeRankEigenvalueThrowsException) {
