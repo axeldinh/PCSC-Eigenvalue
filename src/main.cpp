@@ -248,7 +248,7 @@ GeneralEigenSolver<ScalarType>* createSolver(const std::string& algorithm, int m
         if (threshold!=-1.) {
             ((ShiftedInversePowerMethod<ScalarType> *) solver)->setThreshold(threshold);
         }
-        if (shift!=-1.) {
+        if (std::abs(shift)!=0.0) {
             ((ShiftedInversePowerMethod<ScalarType> *) solver)->setShift(shift);
         }
         else {
@@ -264,7 +264,7 @@ GeneralEigenSolver<ScalarType>* createSolver(const std::string& algorithm, int m
     else {
         throw std::invalid_argument(
             "Wrong algorithm, use -algorithm [option] with option being"
-            " one of \"qr\", \"pw\", \"ipw\", \"sipw\" \n"
+            " one of \"qr\", \"pw\", \"swp\", \"ipw\", \"sipw\" \n"
         );
     }
 
