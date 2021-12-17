@@ -148,7 +148,6 @@ ScalarType ShiftedInversePowerMethod<ScalarType>::solve() {
     I.setIdentity();
     MatrixType matrixShift = *this->mMatrix - mShift*I;
 
-    // TODO Test this if statement
     if (matrixShift.determinant() == 0.0) {
         // The shift is an eigenvalue
         return mShift;
