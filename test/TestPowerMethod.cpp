@@ -90,3 +90,37 @@ TEST_F(TestPowerMethod, noConvergencePrintsToScreen) {
      expected += std::to_string(solver->getMaxIter()) + " iterations\n";
      EXPECT_STREQ(output.c_str(), expected.c_str());
 }
+
+class TestPowerMethodComplex: public ::testing::Test {
+    /**
+     * Test suite for the PowerMethod class with std::complex<double> values.
+     * At initialization, a PowerMethod is instantiated
+     * with a diagonal Eigen::Matrix<std::complex<double>,2,2>
+     * (No vector initialization)
+     */
+protected:
+    void SetUp() override {
+        solver = new PowerMethod<std::complex<double>>();
+        M.resize(n,n);
+        M << std::complex<double>(0.,2.), std::complex<double>(0.,-1.),
+                std::complex<double>(0.,-1.), std::complex<double>(0.,2.);
+        solver->setMatrix(M);
+    }
+
+    void TearDown() override {}
+
+    PowerMethod<std::complex<double>>* solver;
+    Eigen::MatrixXcd M;
+    static constexpr int n {2};
+};
+
+TEST_F(TestPowerMethodComplex, solveReturnsBiggestEigenvalue) {
+    /**
+     * Tests that if A = [[2i,-1i,[-1i,2i]], then the solve method returns 3i.
+     */
+    Eigen::VectorXcd V(n);
+    V.setRandom();
+    solver->setEigenVector(V);
+    auto lambda = solver->solve();
+    ASSERT_NEAR(std::abs(lambda-std::complex<double>(0.,3.)), 0.0, 1e-15);
+}
