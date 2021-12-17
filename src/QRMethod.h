@@ -144,10 +144,7 @@ Eigen::Vector<ScalarType, -1> QRMethod<ScalarType>::solveAll() {
     VectorType eigenValues = A.diagonal();
 
     std::sort(eigenValues.begin(), eigenValues.end(),
-              [](ScalarType x, ScalarType y) {
-        if (abs(x) > abs(y)) { return x; }
-        else { return y; }
-    });
+              [](ScalarType x, ScalarType y) { return std::abs(x) > std::abs(y); });
 
     return eigenValues;
 }
