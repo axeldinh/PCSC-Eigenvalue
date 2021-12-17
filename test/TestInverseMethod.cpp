@@ -6,7 +6,7 @@ class TestInversePowerMethod: public ::testing::Test {
     /**
      * Test suite for the InversePowerMethod class
      * At initialization, a ShiftedInversePowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,2,2>
+     * with a Eigen::Matrix<double,2,2>
      * (No vector initialization)
      */
 protected:
@@ -89,7 +89,7 @@ class TestInversePowerMethodComplex: public ::testing::Test {
     /**
      * Test suite for the InversePowerMethod class with std::complex<double> values
      * At initialization, a ShiftedInversePowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<std::complex<double>,2,2>
+     * with a  Eigen::Matrix<std::complex<double>,2,2>
      * (No vector initialization)
      */
 protected:

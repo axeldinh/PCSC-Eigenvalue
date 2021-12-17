@@ -10,7 +10,7 @@ class TestPowerMethod: public ::testing::Test {
     /**
      * Test suite for the PowerMethod class
      * At initialization, a PowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,2,2>
+     * with a Eigen::Matrix<double,2,2>
      * (No vector initialization)
      */
 protected:
@@ -95,7 +95,7 @@ class TestPowerMethodComplex: public ::testing::Test {
     /**
      * Test suite for the PowerMethod class with std::complex<double> values.
      * At initialization, a PowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<std::complex<double>,2,2>
+     * with a Eigen::Matrix<std::complex<double>,2,2>
      * (No vector initialization)
      */
 protected:

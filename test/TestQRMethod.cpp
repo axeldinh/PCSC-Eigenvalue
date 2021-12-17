@@ -6,7 +6,7 @@ class TestQRMethod: public ::testing::Test {
     /**
      * Test suite for the QRMethod class
      * At initialization, a QRMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,2,2>
+     * with a Eigen::Matrix<double,2,2>
      */
 protected:
     void SetUp() override {

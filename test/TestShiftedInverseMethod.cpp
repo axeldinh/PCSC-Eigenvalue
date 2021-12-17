@@ -6,7 +6,7 @@ class TestShiftedInversePowerMethod: public ::testing::Test {
     /**
      * Test suite for the ShiftedInversePowerMethod class
      * At initialization, a ShiftedInversePowerMethod is instantiated
-     * with a diagonal Eigen::Matrix<double,2,2>
+     * with a Eigen::Matrix<double,2,2>
      * (No vector initialization)
      */
 protected:
