@@ -2,6 +2,7 @@
 #ifndef EIGENVALUE_PROJECT_QRMETHOD_H
 #define EIGENVALUE_PROJECT_QRMETHOD_H
 
+
 #include "GeneralEigenSolver.h"
 
 /**
@@ -43,7 +44,7 @@ public:
     ///@{
     ScalarType solve();
     ScalarType solve(int n);
-    VectorType solve_all();
+    VectorType solveAll();
     ///@}
 };
 
@@ -98,7 +99,6 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
         throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is larger than the maximum number of eigenvalues.\n");
     }
 
-    // TODO test this exception
     if (n<1) {
         throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is smaller than 1.\n");
     }
@@ -106,7 +106,7 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
     VectorType eigenValues;
 
     try {
-        eigenValues = this->solve_all();
+        eigenValues = this->solveAll();
     } catch(UninitializedSolver& e) {
         throw e;
     }
@@ -127,7 +127,7 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
  */
 
 template<typename ScalarType>
-Eigen::Vector<ScalarType, -1> QRMethod<ScalarType>::solve_all() {
+Eigen::Vector<ScalarType, -1> QRMethod<ScalarType>::solveAll() {
 
     if (!this->getIsMatrixInit()) {
         throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
@@ -143,7 +143,11 @@ Eigen::Vector<ScalarType, -1> QRMethod<ScalarType>::solve_all() {
 
     VectorType eigenValues = A.diagonal();
 
-    std::sort(eigenValues.begin(), eigenValues.end(), std::greater<ScalarType>());
+    std::sort(eigenValues.begin(), eigenValues.end(),
+              [](ScalarType x, ScalarType y) {
+        if (abs(x) > abs(y)) { return x; }
+        else { return y; }
+    });
 
     return eigenValues;
 }
