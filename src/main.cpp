@@ -6,7 +6,7 @@
  *
  * \section improvements To Be Improved
  * - Could have a warning to prevent the user from using QRMethod with complex matrices.
- * - More options to QRMethod::solve_all() could allow the user to choose the ordering of the eigenvalues
+ * - More options to QRMethod::solveAll() could allow the user to choose the ordering of the eigenvalues
  * - A logging option could be added to monitor the convergence of the methods.
  * - The current code does not handle sparse matrices, as a lot of matrices used in practice, e.g. in physics,
  * the usage of sparse matrices can be preferred and should be implemented in the future.
@@ -109,7 +109,7 @@
  *  In order for the algorithm to retrieve the correct eigenvalues,
  *  the matrix \f$A\f$ must real and not complex.
  *
- *  The QRMethod#solve_all() method returns a Eigen::Vector<ScalarType> containing the eigenvalues in descending order.
+ *  The QRMethod#solveAll() method returns a Eigen::Vector<ScalarType> containing the eigenvalues in descending order.
  *  It is also possible to retrieve specific eigenvalues using QRMethod#solve(int n) and QRMethod#solve().
  *  The former will retrieve the n-th largest eigenvalue while the latter the largest one.
  *
