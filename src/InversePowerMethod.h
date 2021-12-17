@@ -13,11 +13,14 @@
  *
  * If the eigenvalues are such that \f$|\lambda_1| \ge |\lambda_2| \ge \cdots \ge |\lambda_n|\f$, then \f$\lambda_n\f$ should be returned,
  * unless the starting vector is in the null space of \f$A\f$ or the starting vector is the eigenvector corresponding to another eigenvalue.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 
 template <typename ScalarType>
 class InversePowerMethod: public GeneralPowerMethod<ScalarType> {
+
+    using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
+
 public:
     InversePowerMethod();
     ~InversePowerMethod();
@@ -37,7 +40,7 @@ public:
 /**
  * Basic constructor.
  * Uses the constructor of the GeneralPowerMethod class.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template <typename ScalarType>
 InversePowerMethod<ScalarType>::InversePowerMethod()
@@ -46,7 +49,7 @@ InversePowerMethod<ScalarType>::InversePowerMethod()
 /**
 * Destructor.
 * Uses the destructor of the GeneralPowerMethod class.
-* @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+* @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
 */
 template <typename ScalarType>
 InversePowerMethod<ScalarType>::~InversePowerMethod() {}
@@ -62,7 +65,7 @@ InversePowerMethod<ScalarType>::~InversePowerMethod() {}
  *
  * Throws an UninitializedSolver exception if #mMatrix has not been initialized.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return ScalarType, \f$\lambda\f$ the eigenvalue.
  * @throws UninitializedSolver
  */
@@ -74,7 +77,7 @@ ScalarType InversePowerMethod<ScalarType>::solve() {
     }
 
     // Computing the inverse of A
-    MatrixType<ScalarType> matrixInv = this->mMatrix->partialPivLu().inverse();
+    MatrixType matrixInv = this->mMatrix->partialPivLu().inverse();
 
     ScalarType lambda;
 

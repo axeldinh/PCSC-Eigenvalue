@@ -4,9 +4,6 @@
 
 #include "GeneralEigenSolver.h"
 
-template<typename ScalarType>
-using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
-
 /**
  * Solve an eigenvalue problem using the QR method.
  *
@@ -25,11 +22,15 @@ using MatrixType = Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>;
  *
  * The QR method can be used only on real matrices, not complex.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 
 template <typename ScalarType>
 class QRMethod: public GeneralEigenSolver<ScalarType> {
+
+    using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
+    using VectorType = Eigen::Vector<ScalarType, -1>;
+
 public:
 
     // Constructors and destructors
@@ -42,7 +43,7 @@ public:
     ///@{
     ScalarType solve();
     ScalarType solve(int n);
-    VectorType<ScalarType> solve_all();
+    VectorType solve_all();
     ///@}
 };
 
@@ -53,7 +54,7 @@ public:
 /**
  * Basic constructor.
  * Uses the constructor of the GeneralEigenSolver class.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 QRMethod<ScalarType>::QRMethod()
@@ -62,7 +63,7 @@ QRMethod<ScalarType>::QRMethod()
 /**
  * Destructor.
  * Uses the destructor of the GeneralEigenSolver class.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 QRMethod<ScalarType>::~QRMethod() {}
@@ -74,7 +75,7 @@ QRMethod<ScalarType>::~QRMethod() {}
 /**
  * Call to solve(int n) with n = 1.
  * Returns the highest eigenvalue.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return ScalarType, the highest eigenvalue.
  */
 template<typename ScalarType>
@@ -85,7 +86,7 @@ ScalarType QRMethod<ScalarType>::solve() {
 /**
  * Returns the n-th highest eigenvalue.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param n int, the rank of the desired eigenvalue.
  * @return ScalarType, the n-th highest eigenvalue.
  */
@@ -102,7 +103,7 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
         throw std::invalid_argument("INVALID EIGENVALUES NUMBER: n is smaller than 1.\n");
     }
 
-    VectorType<ScalarType> eigenValues;
+    VectorType eigenValues;
 
     try {
         eigenValues = this->solve_all();
@@ -120,13 +121,13 @@ ScalarType QRMethod<ScalarType>::solve(int n) {
  *
  * Throws an UninitializedSolver exception if #mMatrix has not been initialized.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
- * @return VectorType<ScalarType> name for Eigen::Vector<ScalarType,Eigen::Dynamic,Eigen::Dynamic>, vector containing the eigenvalues of #mMatrix in descending order.
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @return Eigen::Vector<ScalarType,Eigen::Dynamic,Eigen::Dynamic>, vector containing the eigenvalues of #mMatrix in descending order.
  * @throws UninitializedSolver
  */
 
 template<typename ScalarType>
-VectorType<ScalarType> QRMethod<ScalarType>::solve_all() {
+Eigen::Vector<ScalarType, -1> QRMethod<ScalarType>::solve_all() {
 
     if (!this->getIsMatrixInit()) {
         throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
@@ -136,11 +137,11 @@ VectorType<ScalarType> QRMethod<ScalarType>::solve_all() {
     auto A = *GeneralEigenSolver<ScalarType>::mMatrix;
 
     for (int i = 1; i < this->getMaxIter(); i++) {
-        MatrixType<ScalarType> Q = Eigen::HouseholderQR<MatrixType<ScalarType>>(A).householderQ();
+        MatrixType Q = Eigen::HouseholderQR<MatrixType>(A).householderQ();
         A = Q.transpose() * A * Q;
     }
 
-    VectorType<ScalarType> eigenValues = A.diagonal();
+    VectorType eigenValues = A.diagonal();
 
     std::sort(eigenValues.begin(), eigenValues.end(), std::greater<ScalarType>());
 

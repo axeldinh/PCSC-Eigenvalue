@@ -7,13 +7,6 @@
 #include <iostream>
 #include "Exceptions/UninitializedSolver.h"
 
-// TODO Change the place of the using, here they propagate to all files
-template<typename ScalarType>
-using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
-
-template<typename ScalarType>
-using VectorType = Eigen::Vector<ScalarType, -1>;
-
 /**
  * Abstract class for EigenValue solvers.
  * Mother class for classes used to solve eigenvalues
@@ -31,13 +24,16 @@ using VectorType = Eigen::Vector<ScalarType, -1>;
  * All methods are implemented in the header file as the compiler needs the code when calling on
  * a particular template (e.g GeneralEigenSolver<double>)
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 class GeneralEigenSolver {
 
+    using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
+    using VectorType = Eigen::Vector<ScalarType, -1>;
+
 protected:
-    MatrixType<ScalarType> *mMatrix;         /**< Pointer to the matrix operator */
+    MatrixType *mMatrix;         /**< Pointer to the matrix operator */
     unsigned int mMaxIter;                  /**< Maximum number of iterations for the solve() method */
 
     bool isMatrixInit;                      /**< Boolean, true if the matrix has been initialized */
@@ -52,7 +48,7 @@ public:
      *
      */
     ///@{
-    void setMatrix(MatrixType<ScalarType>& A);
+    void setMatrix(MatrixType& A);
     void setMaxIter(int maxIter);
     ///@}
 
@@ -80,7 +76,7 @@ public:
 /**
  * Initialization constructor.
  * Basic constructor, sets #mMaxIter to 1000 and #isMatrixInit to false.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 GeneralEigenSolver<ScalarType>::GeneralEigenSolver() {
@@ -91,7 +87,7 @@ GeneralEigenSolver<ScalarType>::GeneralEigenSolver() {
 /**
  * Destructor.
  * Destructs the pointer to the matrix operator, #mMatrix.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
@@ -107,12 +103,12 @@ GeneralEigenSolver<ScalarType>::~GeneralEigenSolver() {
  * Setter for #mMatrix.
  * Sets #mMatrix as a pointer to A, also sets #isMatrixInit to true.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param A Matrix the solver should point to.
  */
 
 template<typename ScalarType>
-void GeneralEigenSolver<ScalarType>::setMatrix(MatrixType<ScalarType>& A) {
+void GeneralEigenSolver<ScalarType>::setMatrix(MatrixType& A) {
     // TODO test this exception
     if (A.rows() != A.cols()) {
         throw std::invalid_argument("The matrix does not have the same number of rows and columns");
@@ -126,7 +122,7 @@ void GeneralEigenSolver<ScalarType>::setMatrix(MatrixType<ScalarType>& A) {
  * Modifies the value of #mMaxIter. In case maxIter is negative, throws an
  * an <a href="https://en.cppreference.com/w/cpp/error/invalid_argument"> std::invalid_argument </a> exception.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param maxIter Maximum number of iteration for the algorithm.
  */
 template<typename ScalarType>
@@ -144,7 +140,7 @@ void GeneralEigenSolver<ScalarType>::setMaxIter(const int maxIter) {
 /**
  * Getter for #mMaxIter.
  * Returns #mMaxIter.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return int #mMaxIter, Maximum number of iteration for the algorithm.
  */
 template<typename ScalarType>
@@ -155,7 +151,7 @@ int GeneralEigenSolver<ScalarType>::getMaxIter() const{
  * Getter for #isMatrixInit.
  * Returns #isMatrixInit.
  * If false, #mMatrix has not been initialized. In this case, the solve() method should not be called.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return bool #isMatrixInit, true is #mMatrix has been initialized.
  */
 template<typename ScalarType>

@@ -34,11 +34,15 @@
  * Note that when calling solve(MatrixType<ScalarType>& A), where #mEigenVector is randomly initialized if it has not been done before-hand,
  * an <a href="https://en.cppreference.com/w/cpp/error/invalid_argument">std::invalid_argument</a> exception is thrown if #mMatrix has not been initialized.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 
 template <typename ScalarType>
 class GeneralPowerMethod: public GeneralEigenSolver<ScalarType>{
+
+    using MatrixType = Eigen::Matrix<ScalarType, -1, -1>;
+    using VectorType = Eigen::Vector<ScalarType, -1>;
+
 public:
     // Constructors and Destructors
     GeneralPowerMethod();
@@ -48,7 +52,7 @@ public:
      *
      */
     ///@{
-    void setEigenVector(VectorType<ScalarType> V);
+    void setEigenVector(VectorType V);
     void setThreshold(double threshold);
     ///@}
 
@@ -58,7 +62,7 @@ public:
     ///@{
     double getThreshold() const;
     bool getIsVectorInit() const;
-    VectorType<ScalarType> getEigenVector() const;
+    VectorType getEigenVector() const;
     ///@}
 
 
@@ -72,7 +76,7 @@ public:
 
 protected:
 
-    VectorType<ScalarType> mEigenVector;    /**< Starting vector for the algorithm. In the end becomes the eigenvector. */
+    VectorType mEigenVector;    /**< Starting vector for the algorithm. In the end becomes the eigenvector. */
     bool isVectorInit;                      /**< Boolean, true if the vector has been initialized */
     double mThreshold;                      /**< Threshold for the solve() method */
 
@@ -80,7 +84,7 @@ protected:
      *
      */
     ///@{
-    ScalarType solve(MatrixType<ScalarType>& A);
+    ScalarType solve(MatrixType& A);
     ///@}
 };
 
@@ -91,7 +95,7 @@ protected:
 /**
  * Initialization constructor.
  * Basic constructor, sets #mThreshold to 1e-15 and #isVectorInit to false
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 GeneralPowerMethod<ScalarType>::GeneralPowerMethod() {
@@ -102,7 +106,7 @@ GeneralPowerMethod<ScalarType>::GeneralPowerMethod() {
 /**
  * Destructor.
  * Calls the destructor of GeneralEigenSolver.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 GeneralPowerMethod<ScalarType>::~GeneralPowerMethod() {}
@@ -115,11 +119,11 @@ GeneralPowerMethod<ScalarType>::~GeneralPowerMethod() {}
  * Setter for #mEigenVector.
  * Sets #mEigenVector as a copy of V, also sets #isVectorInit to true.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param V VectorType<ScalarType> (Eigen::Vector<ScalarType, -1,-1>), Starting vector for the power method.
  */
 template<typename ScalarType>
-void GeneralPowerMethod<ScalarType>::setEigenVector(const VectorType<ScalarType> V) {
+void GeneralPowerMethod<ScalarType>::setEigenVector(const VectorType V) {
     mEigenVector.resize(V.rows(), V.cols());
     mEigenVector = V;
     isVectorInit = true;
@@ -131,7 +135,7 @@ void GeneralPowerMethod<ScalarType>::setEigenVector(const VectorType<ScalarType>
  * an <a href="https://en.cppreference.com/w/cpp/error/invalid_argument"> std::invalid_argument </a> exception.
  * In case threshold is less than 1e-20, prints a warning.
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param threshold double, Threshold for the power method algorithm (see the detailed description GeneralPowerMethod).
  */
 template<typename ScalarType>
@@ -154,7 +158,7 @@ void GeneralPowerMethod<ScalarType>::setThreshold(const double threshold) {
  * Getter for #mThreshold.
  * Returns #mThreshold
  *
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return double, Threshold for the power method algorithm (see the detailed description GeneralPowerMethod).
  */
 template<typename ScalarType>
@@ -166,7 +170,7 @@ double GeneralPowerMethod<ScalarType>::getThreshold() const {
  * Getter for #isVectorInit.
  * Returns #isVectorInit.
  * If false, #mEigenVector has not been initialized. If solve() is called, #mEigenVector will be initialized randomly.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return bool #isVectorInit, true if #mEigenVector has been initialized.
  */
 template<typename ScalarType>
@@ -177,11 +181,11 @@ bool GeneralPowerMethod<ScalarType>::getIsVectorInit() const {
 /**
  * Getter for #mEigenVector.
  * Returns a copy of #mEigenVector.
- * @tparam VectorType naming for Eigen::Vector<ScalarType, -1, -1>
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @return VectorType, the starting vector, or the eigenvector after the power method algorithm.
  */
 template<typename ScalarType>
-VectorType<ScalarType> GeneralPowerMethod<ScalarType>::getEigenVector() const {
+Eigen::Vector<ScalarType, -1> GeneralPowerMethod<ScalarType>::getEigenVector() const {
     return this->mEigenVector;
 }
 
@@ -194,13 +198,13 @@ VectorType<ScalarType> GeneralPowerMethod<ScalarType>::getEigenVector() const {
  * For more information about the algorithm, see the detailed description, GeneralPowerMethod.
  * If #mMatrix has not been initialized (see GeneralEigenSolver), throws an UninitializedSolver exception.
  * In case #mEigenVector ends up in the null space of \f$A\f$, throws an <a href="https://en.cppreference.com/w/cpp/error/invalid_argument">std::invalid_argument</a> exception.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  * @param A pointer to matrix operator \f$A\f$
  * @return ScalarType The resulting eigenvalue.
  * @throws UninitializedSolver, invalid_argument
  */
 template <typename ScalarType>
-ScalarType GeneralPowerMethod<ScalarType>::solve(MatrixType<ScalarType>& A) {
+ScalarType GeneralPowerMethod<ScalarType>::solve(MatrixType& A) {
 
     if (!this->getIsMatrixInit()) {
         throw UninitializedSolver("matrix", "please initialize with GeneralEigenSolver<typename ScalarType>::setMatrix");
@@ -252,7 +256,7 @@ ScalarType GeneralPowerMethod<ScalarType>::solve(MatrixType<ScalarType>& A) {
  * Initialize #mEigenVector with a uniform distribution in [-1,1].
  * The number of rows of #mEigenVector is changed to the number of columns of #mMatrix.
  * If #isMatrixInit is false, throws an UninitializedSolver exception.
- * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type int, double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
+ * @tparam ScalarType The type of the scalars used in the eigenvalue problem (usually of type double or <a href="https://en.cppreference.com/w/cpp/numeric/complex">std::complex</a>)
  */
 template<typename ScalarType>
 void GeneralPowerMethod<ScalarType>::initRandomEigenVector() {
